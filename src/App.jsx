@@ -30,8 +30,8 @@ function AppContent() {
   const [categoryType, setCategoryType] = useState('stores');
   const [locations, setLocations] = useState({
     states: [],
-    cities: [],
-    mandals: []
+    cities: {},
+    mandals: {}
   });
   const [categories, setCategories] = useState({
     stores: {},
@@ -62,12 +62,9 @@ function AppContent() {
         const ads = await fetchAdsData();
         setAdsData(Array.isArray(ads) ? ads : []);
         
-        // Fetch locations (states) - ensure it's an array
-        const states = await fetchLocations();
-        setLocations(prev => ({ 
-          ...prev, 
-          states: Array.isArray(states) ? states : [] 
-        }));
+        // Fetch locations - get the full object
+        const locationsResponse = await fetchFullLocations();
+        setLocations(locationsResponse || { states: [], cities: {}, mandals: {} });
         
         // Fetch categories
         const cats = await fetchCategories();
@@ -85,7 +82,18 @@ function AppContent() {
           contact: "contact@localdirectory.com"
         });
         setAdsData([]);
-        setLocations({ states: ["Telangana", "Andhra Pradesh"], cities: [], mandals: [] });
+        // Set fallback data with object structure
+        setLocations({
+          states: ["Telangana", "Andhra Pradesh"],
+          cities: {
+            "Telangana": ["Hyderabad", "Warangal"],
+            "Andhra Pradesh": ["Vijayawada", "Guntur"]
+          },
+          mandals: {
+            "Hyderabad": ["Serilingampally", "Kukatpally"],
+            "Vijayawada": ["Vijayawada Urban", "Vijayawada Rural"]
+          }
+        });
         setCategories({
           stores: { "Grocery": ["Supermarket"], "Electronics": ["Mobile Shop"] },
           services: { "Repair": ["Electrician"], "Beauty": ["Salon"] }
@@ -98,62 +106,55 @@ function AppContent() {
     initData();
   }, []);
 
-  // Update cities when state changes
+  
+    // Add a new function to fetch full locations object
+  const fetchFullLocations = async () => {
+    try {
+      const response = await api.get('/locations');
+      return {
+        states: Array.isArray(response?.states) ? response.states : [],
+        cities: response?.cities || {},
+        mandals: response?.mandals || {}
+      };
+    } catch (error) {
+      console.error('Error fetching full locations:', error);
+      return null;
+    }
+  };
+  
+// Update cities when state changes - now using object
   useEffect(() => {
-    const updateCities = async () => {
-      if (filters.state) {
-        setLoading(true);
-        try {
-          const cities = await fetchLocations(filters.state);
-          setLocations(prev => ({ 
-            ...prev, 
-            cities: Array.isArray(cities) ? cities : [],
-            mandals: [] 
-          }));
-          // Reset dependent filters
-          setFilters(prev => ({ ...prev, city: '', mandal: '', category: '', type: '' }));
-          setTypeOptions([]);
-        } catch (error) {
-          console.error('Error fetching cities:', error);
-          setLocations(prev => ({ ...prev, cities: [], mandals: [] }));
-        } finally {
-          setLoading(false);
-        }
-      } else {
-        setLocations(prev => ({ ...prev, cities: [], mandals: [] }));
-      }
-    };
-    
-    updateCities();
-  }, [filters.state]);
+    if (filters.state) {
+      const citiesForState = locations.cities[filters.state] || [];
+      setLocations(prev => ({ 
+        ...prev, 
+        currentCities: citiesForState,
+        currentMandals: []
+      }));
+      // Reset dependent filters
+      setFilters(prev => ({ ...prev, city: '', mandal: '', category: '', type: '' }));
+      setTypeOptions([]);
+    } else {
+      setLocations(prev => ({ ...prev, currentCities: [], currentMandals: [] }));
+    }
+  }, [filters.state, locations.cities]);
 
-  // Update mandals when city changes
+
+  // Update mandals when city changes - now using object
   useEffect(() => {
-    const updateMandals = async () => {
-      if (filters.state && filters.city) {
-        setLoading(true);
-        try {
-          const mandals = await fetchLocations(filters.state, filters.city);
-          setLocations(prev => ({ 
-            ...prev, 
-            mandals: Array.isArray(mandals) ? mandals : [] 
-          }));
-          // Reset dependent filters
-          setFilters(prev => ({ ...prev, mandal: '', category: '', type: '' }));
-          setTypeOptions([]);
-        } catch (error) {
-          console.error('Error fetching mandals:', error);
-          setLocations(prev => ({ ...prev, mandals: [] }));
-        } finally {
-          setLoading(false);
-        }
-      } else {
-        setLocations(prev => ({ ...prev, mandals: [] }));
-      }
-    };
-    
-    updateMandals();
-  }, [filters.state, filters.city]);
+    if (filters.state && filters.city) {
+      const mandalsForCity = locations.mandals[filters.city] || [];
+      setLocations(prev => ({ 
+        ...prev, 
+        currentMandals: mandalsForCity 
+      }));
+      // Reset dependent filters
+      setFilters(prev => ({ ...prev, mandal: '', category: '', type: '' }));
+      setTypeOptions([]);
+    } else {
+      setLocations(prev => ({ ...prev, currentMandals: [] }));
+    }
+  }, [filters.state, filters.city, locations.mandals]);
 
   // Update type options when category changes
   useEffect(() => {
