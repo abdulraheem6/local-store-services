@@ -71,7 +71,7 @@ const FilterPanel = ({
         </div>
 
         {/* City Filter */}
-        {/* <div className="filter-group">
+        <div className="filter-group">
           <label htmlFor="city">City *</label>
           <div className="select-wrapper">
             <select
@@ -87,10 +87,10 @@ const FilterPanel = ({
               ))}
             </select>
           </div>
-        </div> */}
+        </div>
 
         {/* City Filter */}
-        <div className="filter-group">
+        {/* <div className="filter-group">
           <label htmlFor="city">City *</label>
           <div className="select-wrapper">
             <select
@@ -106,7 +106,7 @@ const FilterPanel = ({
               ))}
             </select>
           </div>
-        </div>
+        </div> */}
 
         {/* Mandal Filter */}
         <div className="filter-group">
