@@ -13,11 +13,13 @@
     "upload-r2": "node scripts/upload-to-r2.js",
     "setup-r2": "wrangler r2 bucket create stores-services-data",
     "list-r2": "wrangler r2 bucket list",
+    "react-icons": "^5.x.x",
     "clear-r2": "node scripts/clear-r2.js"
   },
   "dependencies": {
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
+    "react-icons": "^5.x.x",
     "axios": "^1.x.x",
     "@eslint/js": "^9.39.1",
     "@types/react": "^19.2.5",
