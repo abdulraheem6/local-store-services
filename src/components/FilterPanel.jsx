@@ -71,7 +71,7 @@ const FilterPanel = ({
         </div>
 
         {/* City Filter */}
-        <div className="filter-group">
+        {/* <div className="filter-group">
           <label htmlFor="city">City *</label>
           <div className="select-wrapper">
             <select
@@ -83,6 +83,25 @@ const FilterPanel = ({
             >
               <option value="">Select City</option>
               {locations.cities.map(city => (
+                <option key={city} value={city}>{city}</option>
+              ))}
+            </select>
+          </div>
+        </div> */}
+
+        {/* City Filter */}
+        <div className="filter-group">
+          <label htmlFor="city">City *</label>
+          <div className="select-wrapper">
+            <select
+              id="city"
+              value={filters.city}
+              onChange={(e) => onFilterChange('city', e.target.value)}
+              className="filter-select"
+              disabled={!filters.state}
+            >
+              <option value="">Select City</option>
+              {Array.isArray(locations.cities) && locations.cities.map(city => (
                 <option key={city} value={city}>{city}</option>
               ))}
             </select>
