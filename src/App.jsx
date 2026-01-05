@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { ThemeProvider, useTheme } from './context/ThemeContext';
-import StoreCard from './components/StoreCard';
+import StoreCard from './components/storeCard';
 import FilterPanel from './components/FilterPanel';
 import Pagination from './components/Pagination';
 import AdsSection from './components/AdsSection';
