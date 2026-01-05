@@ -1,0 +1,13 @@
+name = "local-stores-services-directory"
+compatibility_date = "2023-12-01"
+pages_build_output_dir = "./dist"
+
+[[r2_buckets]]
+binding = "STORES_BUCKET"
+bucket_name = "stores-services-data"
+preview_bucket_name = "stores-services-data-preview"
+
+[vars]
+ENVIRONMENT = "production"
+API_VERSION = "2.0"
+DATA_STRUCTURE = "hierarchical"

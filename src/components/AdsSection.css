@@ -1,0 +1,106 @@
+.ads-section {
+  background: var(--card-bg);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  border: 1px solid var(--border-color);
+}
+
+.ads-section h3 {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--primary-color);
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+}
+
+.ad-placeholder {
+  text-align: center;
+  padding: 2rem;
+  background: var(--input-bg);
+  border-radius: var(--border-radius);
+  border: 2px dashed var(--border-color);
+}
+
+.ad-placeholder p {
+  color: var(--text-color);
+  margin-bottom: 0.5rem;
+}
+
+.ad-placeholder small {
+  color: var(--gray-color);
+}
+
+.ad-container {
+  background: linear-gradient(135deg, var(--secondary-color), #2980b9);
+  border-radius: var(--border-radius);
+  padding: 1.5rem;
+  color: white;
+  position: relative;
+  overflow: hidden;
+}
+
+.ad-content h4 {
+  font-size: 1.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.ad-content p {
+  margin-bottom: 1rem;
+  opacity: 0.9;
+}
+
+.ad-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: white;
+  text-decoration: none;
+  font-weight: 600;
+  padding: 0.5rem 1rem;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: var(--border-radius);
+  transition: all 0.3s ease;
+}
+
+.ad-link:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateX(5px);
+}
+
+.ad-indicators {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  justify-content: center;
+}
+
+.ad-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.3s ease;
+}
+
+.ad-indicator.active {
+  background: white;
+  transform: scale(1.2);
+}
+
+.ads-info {
+  text-align: center;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-color);
+}
+
+.ads-info small {
+  color: var(--gray-color);
+  font-size: 0.8rem;
+}

@@ -1,0 +1,150 @@
+.about-section {
+  background: var(--card-bg);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  padding: 2rem;
+  border: 1px solid var(--border-color);
+}
+
+.about-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  color: var(--primary-color);
+}
+
+.about-header h2 {
+  font-size: 1.75rem;
+  font-weight: 700;
+}
+
+.about-description {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: var(--text-color);
+  margin-bottom: 2rem;
+  padding: 1rem;
+  background: var(--input-bg);
+  border-radius: var(--border-radius);
+  border-left: 4px solid var(--secondary-color);
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.feature-card {
+  background: var(--input-bg);
+  padding: 1.5rem;
+  border-radius: var(--border-radius);
+  border: 1px solid var(--border-color);
+  transition: all 0.3s ease;
+}
+
+.feature-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow);
+  border-color: var(--secondary-color);
+}
+
+.feature-icon {
+  width: 50px;
+  height: 50px;
+  background: var(--secondary-color);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+  color: white;
+  font-size: 1.25rem;
+}
+
+.feature-card h3 {
+  color: var(--primary-color);
+  margin-bottom: 0.5rem;
+  font-size: 1.1rem;
+}
+
+.feature-card p {
+  color: var(--text-color);
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.how-to-use {
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: var(--input-bg);
+  border-radius: var(--border-radius);
+}
+
+.how-to-use h3 {
+  color: var(--primary-color);
+  margin-bottom: 1rem;
+}
+
+.how-to-use ol {
+  margin-left: 1.5rem;
+  color: var(--text-color);
+}
+
+.how-to-use li {
+  margin-bottom: 0.75rem;
+  line-height: 1.5;
+}
+
+.how-to-use strong {
+  color: var(--secondary-color);
+}
+
+.additional-features {
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: var(--input-bg);
+  border-radius: var(--border-radius);
+}
+
+.additional-features h3 {
+  color: var(--primary-color);
+  margin-bottom: 1rem;
+}
+
+.additional-features ul {
+  margin-left: 1.5rem;
+  color: var(--text-color);
+}
+
+.additional-features li {
+  margin-bottom: 0.5rem;
+  line-height: 1.5;
+}
+
+.about-footer {
+  text-align: center;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border-color);
+  color: var(--text-color);
+}
+
+.about-footer strong {
+  color: var(--secondary-color);
+}
+
+@media (max-width: 768px) {
+  .about-section {
+    padding: 1.5rem;
+  }
+  
+  .about-header h2 {
+    font-size: 1.5rem;
+  }
+  
+  .features-grid {
+    grid-template-columns: 1fr;
+  }
+}
