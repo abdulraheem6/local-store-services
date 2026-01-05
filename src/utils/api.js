@@ -56,6 +56,7 @@ export const fetchAdsData = async () => {
 };
 
 // Fetch locations - FIXED to handle different response formats
+// Fetch locations - handle object structure
 export const fetchLocations = async (state = null, city = null) => {
   try {
     const params = {};
@@ -64,25 +65,24 @@ export const fetchLocations = async (state = null, city = null) => {
     
     const response = await api.get('/locations', { params });
     
-    // Handle different response formats
-    if (Array.isArray(response)) {
-      // If response is directly an array
-      return response;
-    } else if (response && Array.isArray(response.data)) {
-      // If response has { data: [] } format
-      return response.data;
-    } else if (response && typeof response === 'object') {
-      // If response is an object with states/cities/mandals properties
-      if (state && city && response.mandals) {
-        return Array.isArray(response.mandals) ? response.mandals : [];
-      } else if (state && response.cities) {
-        return Array.isArray(response.cities) ? response.cities : [];
-      } else if (response.states) {
-        return Array.isArray(response.states) ? response.states : [];
+    // Handle the object structure
+    if (response && typeof response === 'object') {
+      if (state && city) {
+        // Return mandals for a specific city
+        const mandals = response.mandals?.[city] || [];
+        return Array.isArray(mandals) ? mandals : [];
+      } else if (state) {
+        // Return cities for a specific state
+        const cities = response.cities?.[state] || [];
+        return Array.isArray(cities) ? cities : [];
+      } else {
+        // Return all states
+        const states = response.states || [];
+        return Array.isArray(states) ? states : [];
       }
     }
     
-    // Default fallback
+    // Fallback
     return getFallbackLocations(state, city);
   } catch (error) {
     console.error('Error fetching locations:', error);
