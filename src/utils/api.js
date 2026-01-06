@@ -94,7 +94,8 @@ export const fetchLocations = async (state = null, city = null) => {
 export const fetchCategories = async () => {
   try {
     const response = await api.get('/categories');
-    
+    // Ensure response has the expected structure and pring on console
+    console.log('Error fetching catergories:', response.data);
     // Ensure response has the expected structure
     if (response && typeof response === 'object') {
       return {
