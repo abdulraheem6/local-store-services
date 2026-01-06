@@ -183,49 +183,138 @@ async function handleLocations(request, env) {
   }
 }
 
+//Get all categories and types for stores and services
 // Get all categories and types
 async function handleCategories(request, env) {
   try {
+    console.log('handleCategories called');
+    
+    // Check if bucket exists
+    if (!env.STORES_BUCKET) {
+      console.error('STORES_BUCKET is not defined in env');
+      return getDefaultCategories();
+    }
+    
     const categoriesData = await env.STORES_BUCKET.get('meta/categories.json');
     
     if (!categoriesData) {
-      const defaultCategories = {
-        stores: {
-          Grocery: ["Supermarket", "Kirana Store", "Vegetable Shop", "Fruit Shop"],
-          Electronics: ["Mobile Shop", "Computer Shop", "Home Appliances"],
-          Clothing: ["Footwear Shop", "Garment Shop", "Boutique"],
-          Medical: ["Pharmacy", "Medical Store", "Clinic"],
-          Food: ["Restaurant", "Bakery", "Sweet Shop"],
-          Home: ["Furniture", "Hardware", "Paint Shop"]
-        },
-        services: {
-          Repair: ["Electrician", "Plumber", "Carpenter", "Mechanic"],
-          Beauty: ["Salon", "Spa", "Beauty Parlor"],
-          Education: ["Tution", "Coaching", "Training Center"],
-          Healthcare: ["Doctor", "Dentist", "Physiotherapist"],
-          Logistics: ["Courier", "Transport", "Packers & Movers"],
-          Professional: ["CA", "Lawyer", "Consultant"]
-        }
-      };
-      
-      return new Response(JSON.stringify(defaultCategories), {
-        headers: { 
-          'Content-Type': 'application/json',
-          'Cache-Control': 'public, max-age=3600'
-        },
-      });
+      console.log('No categories.json found in bucket, returning default');
+      return getDefaultCategories();
     }
     
-    return new Response(categoriesData.body, {
+    // Try to parse the data
+    const data = await categoriesData.text();
+    let categories;
+    
+    try {
+      categories = JSON.parse(data);
+    } catch (parseError) {
+      console.error('Failed to parse categories.json:', parseError);
+      return getDefaultCategories();
+    }
+    
+    console.log('Successfully loaded categories from bucket');
+    
+    return new Response(JSON.stringify(categories), {
       headers: { 
         'Content-Type': 'application/json',
-        'Cache-Control': 'public, max-age=3600'
+        'Cache-Control': 'public, max-age=3600',
+        'Access-Control-Allow-Origin': '*', // Add CORS if needed
       },
     });
+    
   } catch (error) {
-    throw new Error(`Failed to fetch categories: ${error.message}`);
+    console.error('Unhandled error in handleCategories:', error);
+    
+    return new Response(JSON.stringify({
+      success: false,
+      error: 'Failed to fetch categories',
+      message: error.message,
+      timestamp: new Date().toISOString()
+    }), {
+      status: 500,
+      headers: { 
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+      },
+    });
   }
 }
+
+// Helper function for default categories
+function getDefaultCategories() {
+  const defaultCategories = {
+    success: true,
+    stores: {
+      Grocery: ["Supermarket", "Kirana Store", "Vegetable Shop", "Fruit Shop"],
+      Electronics: ["Mobile Shop", "Computer Shop", "Home Appliances"],
+      Clothing: ["Footwear Shop", "Garment Shop", "Boutique"],
+      Medical: ["Pharmacy", "Medical Store", "Clinic"],
+      Food: ["Restaurant", "Bakery", "Sweet Shop"],
+      Home: ["Furniture", "Hardware", "Paint Shop"]
+    },
+    services: {
+      Repair: ["Electrician", "Plumber", "Carpenter", "Mechanic"],
+      Beauty: ["Salon", "Spa", "Beauty Parlor"],
+      Education: ["Tution", "Coaching", "Training Center"],
+      Healthcare: ["Doctor", "Dentist", "Physiotherapist"],
+      Logistics: ["Courier", "Transport", "Packers & Movers"],
+      Professional: ["CA", "Lawyer", "Consultant"]
+    }
+  };
+  
+  return new Response(JSON.stringify(defaultCategories), {
+    headers: { 
+      'Content-Type': 'application/json',
+      'Cache-Control': 'public, max-age=3600',
+      'Access-Control-Allow-Origin': '*',
+    },
+  });
+}
+
+// Get all categories and types
+// async function handleCategories(request, env) {
+//   try {
+//     const categoriesData = await env.STORES_BUCKET.get('meta/categories.json');
+    
+//     if (!categoriesData) {
+//       const defaultCategories = {
+//         stores: {
+//           Grocery: ["Supermarket", "Kirana Store", "Vegetable Shop", "Fruit Shop"],
+//           Electronics: ["Mobile Shop", "Computer Shop", "Home Appliances"],
+//           Clothing: ["Footwear Shop", "Garment Shop", "Boutique"],
+//           Medical: ["Pharmacy", "Medical Store", "Clinic"],
+//           Food: ["Restaurant", "Bakery", "Sweet Shop"],
+//           Home: ["Furniture", "Hardware", "Paint Shop"]
+//         },
+//         services: {
+//           Repair: ["Electrician", "Plumber", "Carpenter", "Mechanic"],
+//           Beauty: ["Salon", "Spa", "Beauty Parlor"],
+//           Education: ["Tution", "Coaching", "Training Center"],
+//           Healthcare: ["Doctor", "Dentist", "Physiotherapist"],
+//           Logistics: ["Courier", "Transport", "Packers & Movers"],
+//           Professional: ["CA", "Lawyer", "Consultant"]
+//         }
+//       };
+      
+//       return new Response(JSON.stringify(defaultCategories), {
+//         headers: { 
+//           'Content-Type': 'application/json',
+//           'Cache-Control': 'public, max-age=3600'
+//         },
+//       });
+//     }
+    
+//     return new Response(categoriesData.body, {
+//       headers: { 
+//         'Content-Type': 'application/json',
+//         'Cache-Control': 'public, max-age=3600'
+//       },
+//     });
+//   } catch (error) {
+//     throw new Error(`Failed to fetch categories: ${error.message}`);
+//   }
+// }
 
 // Get stores based on hierarchical filters
 async function handleStores(request, env) {
