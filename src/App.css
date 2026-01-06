@@ -584,3 +584,46 @@ body {
     gap: 0.25rem;
   }
 }
+
+
+/* Add to App.css */
+
+.warning-text {
+  display: block;
+  margin-top: 0.5rem;
+  color: #ff9800;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.debug-info {
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: var(--border-radius);
+  padding: 1rem;
+  margin-top: 1rem;
+  font-size: 0.8rem;
+  color: #666;
+}
+
+.debug-info h4 {
+  margin: 0 0 0.5rem 0;
+  color: #444;
+}
+
+.debug-info p {
+  margin: 0.25rem 0;
+}
+
+/* For dark mode */
+[data-theme="dark"] .debug-info {
+  background: rgba(255, 255, 255, 0.05);
+  color: #aaa;
+}
+
+[data-theme="dark"] .debug-info h4 {
+  color: #ccc;
+}
+
+.warning-text {
+  color: #ffb74d;
+}
