@@ -90,26 +90,63 @@ export const fetchLocations = async (state = null, city = null) => {
   }
 };
 
-// Fetch categories
 export const fetchCategories = async () => {
   try {
     const response = await api.get('/categories');
-    // Ensure response has the expected structure and pring on console
-    console.log('Error fetching catergories:', response.data);
-    // Ensure response has the expected structure
-    if (response && typeof response === 'object') {
-      return {
-        stores: response.stores || {},
-        services: response.services || {}
-      };
+    
+    console.log('Categories API Response status:', response.status);
+    console.log('Categories API Response headers:', response.headers);
+    console.log('Categories API Response data:', response.data);
+    
+    // Check if response has data
+    if (!response || !response.data) {
+      console.error('No response or data received');
+      return { stores: {}, services: {} };
     }
     
-    return getFallbackCategories();
+    // If response has success flag (from Option 1)
+    if (response.data.success === false) {
+      console.error('API returned error:', response.data.message);
+      return { stores: {}, services: {} };
+    }
+    
+    // Return the data
+    return {
+      stores: response.data.stores || {},
+      services: response.data.services || {}
+    };
+    
   } catch (error) {
-    console.error('Error fetching categories:', error);
-    return getFallbackCategories();
+    console.error('Error in fetchCategories:', error);
+    console.error('Error details:', error.response || error.message);
+    
+    // Return empty structure to prevent UI crashes
+    return {
+      stores: {},
+      services: {}
+    };
   }
 };
+// Fetch categories
+// export const fetchCategories = async () => {
+//   try {
+//     const response = await api.get('/categories');
+//     // Ensure response has the expected structure and pring on console
+//     console.log('Error fetching catergories:', response.data);
+//     // Ensure response has the expected structure
+//     if (response && typeof response === 'object') {
+//       return {
+//         stores: response.stores || {},
+//         services: response.services || {}
+//       };
+//     }
+    
+//     return getFallbackCategories();
+//   } catch (error) {
+//     console.error('Error fetching categories:', error);
+//     return getFallbackCategories();
+//   }
+// };
 
 // Fetch stores
 export const fetchStores = async (filters = {}, page = 1, limit = 10) => {
