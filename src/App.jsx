@@ -124,6 +124,7 @@ function AppContent() {
         
         // Fetch categories
         const cats = await fetchCategories();
+        console.log('City changed to:', cats);
         setCategories(cats || { stores: {}, services: {} });
         
       } catch (error) {
