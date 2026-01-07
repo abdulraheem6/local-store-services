@@ -673,3 +673,26 @@ function App() {
 }
 
 export default App;
+
+
+
+// 2. Wrap your App with DataProvider to pass location categoris information to buttom
+// Update src/main.jsx or src/App.jsx
+
+
+// import React from 'react';
+// import ReactDOM from 'react-dom/client';
+// import { DataProvider } from './context/DataContext';
+// import { ThemeProvider } from './context/ThemeContext';
+// import App from './App';
+// import './index.css';
+
+// ReactDOM.createRoot(document.getElementById('root')).render(
+//   <React.StrictMode>
+//     <DataProvider>
+//       <ThemeProvider>
+//         <App />
+//       </ThemeProvider>
+//     </DataProvider>
+//   </React.StrictMode>
+// );
