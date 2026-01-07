@@ -22,3 +22,11 @@ bash
 # In Cloudflare Pages dashboard
 DATABASE_ID = "your-d1-database-id"
 ENVIRONMENT = "production"
+
+
+ Cost: $0 for all of this!
+Cloudflare Pages: Free (unlimited requests, 500 builds/month)
+
+Cloudflare D1: Free (5MB storage, 5M reads/day)
+
+Cloudflare Workers KV: Free (100,000 reads/day)
