@@ -284,3 +284,44 @@
 }
 
 .rate-l
+
+/* Business Type Selector */
+.business-type-selector {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.type-btn {
+  flex: 1;
+  padding: 1rem;
+  border: 2px solid #e0e0e0;
+  border-radius: var(--border-radius);
+  background: white;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.type-btn:hover {
+  border-color: var(--secondary-color);
+  background: rgba(52, 152, 219, 0.1);
+}
+
+.type-btn.active {
+  border-color: var(--secondary-color);
+  background: var(--secondary-color);
+  color: white;
+}
+
+/* Submit Error */
+.submit-error {
+  padding: 1rem;
+  background: #fdedec;
+  border: 1px solid #f5b7b1;
+  border-radius: var(--border-radius);
+  margin-bottom: 1.5rem;
+  text-align: center;
+  font-weight: 600;
+}
