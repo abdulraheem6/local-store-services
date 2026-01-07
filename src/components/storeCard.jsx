@@ -5,7 +5,9 @@ import {
   FaClock, 
   FaShoppingBag, 
   FaTools,
-  FaStar, 
+  FaStar,
+  FaGlobe,
+  FaCheckCircle,
   FaExternalLinkAlt 
 } from 'react-icons/fa';
 import './StoreCard.css';
@@ -23,6 +25,11 @@ const StoreCard = ({ item, categoryType = 'stores' }) => {
       <div className="store-header">
         <div className="store-category">
           {categoryType === 'stores' ? 'Store' : 'Service'}: {item.category}
+          {item.verified && (
+            <span className="verified-badge">
+              <FaCheckCircle /> Verified
+            </span>
+          )}
         </div>
         <div className="store-rating">
           <FaStar />
@@ -89,6 +96,20 @@ const StoreCard = ({ item, categoryType = 'stores' }) => {
         <button onClick={handleGetDirections} className="contact-btn direction-btn">
           <FaExternalLinkAlt /> Directions
         </button>
+        {/* Website (if available) */}
+        {item.website && (
+            <div className="detail-item">
+              <FaGlobe />
+              <div>
+                <div className="detail-title">Website</div>
+                <div className="detail-value">
+                  <a href={item.website} target="_blank" rel="noopener noreferrer">
+                    Visit Website
+                  </a>
+                </div>
+              </div>
+            </div>
+          )}
       </div>
     </div>
   );
