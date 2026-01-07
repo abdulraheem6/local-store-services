@@ -1,9 +1,27 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { fetchCategories, fetchLocations } from '../utils/api';
+import axios from 'axios';
 
 const DataContext = createContext();
 
-export const useData = () => useContext(DataContext);
+export const useData = () => {
+  const context = useContext(DataContext);
+  if (!context) {
+    console.error('useData must be used within a DataProvider');
+    // Return fallback values so the app doesn't crash
+    return {
+      locations: { states: [], cities: [], mandals: [] },
+      fullLocations: { states: [], cities: {}, mandals: {} },
+      categories: { stores: {}, services: {} },
+      loading: false,
+      error: null,
+      getCitiesForState: () => [],
+      getMandalsForCity: () => [],
+      getServiceTypes: () => [],
+      reloadData: () => {}
+    };
+  }
+  return context;
+};
 
 export const DataProvider = ({ children }) => {
   const [locations, setLocations] = useState({
@@ -11,66 +29,81 @@ export const DataProvider = ({ children }) => {
     cities: [],
     mandals: []
   });
+  
   const [fullLocations, setFullLocations] = useState({
     states: [],
     cities: {},
     mandals: {}
   });
+  
   const [categories, setCategories] = useState({
     stores: {},
     services: {}
   });
+  
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   const loadData = async () => {
+    setLoading(true);
+    setError(null);
+    
     try {
-      setLoading(true);
-      
-      // Fetch full locations data
       const apiBaseUrl = import.meta.env.DEV ? 'http://localhost:8787/api' : '/api';
-      const response = await fetch(`${apiBaseUrl}/locations`);
-      const locationsData = await response.json();
+      console.log('Fetching data from:', apiBaseUrl);
       
-      if (locationsData && typeof locationsData === 'object') {
-        const formattedLocations = {
+      // Load locations
+      const locationsResponse = await axios.get(`${apiBaseUrl}/locations`);
+      console.log('Locations response:', locationsResponse.data);
+      
+      if (locationsResponse.data) {
+        const locationsData = locationsResponse.data;
+        setFullLocations({
           states: Array.isArray(locationsData.states) ? locationsData.states : [],
           cities: locationsData.cities || {},
           mandals: locationsData.mandals || {}
-        };
-        
-        setFullLocations(formattedLocations);
-        setLocations(prev => ({ 
-          ...prev, 
-          states: formattedLocations.states 
-        }));
+        });
+        setLocations({
+          states: Array.isArray(locationsData.states) ? locationsData.states : [],
+          cities: [],
+          mandals: []
+        });
       }
       
-      // Fetch categories
-      const cats = await fetchCategories();
-      setCategories(cats || { stores: {}, services: {} });
+      // Load categories
+      const categoriesResponse = await axios.get(`${apiBaseUrl}/categories`);
+      console.log('Categories response:', categoriesResponse.data);
       
-    } catch (error) {
-      console.error('Error loading data:', error);
-      setError('Failed to load data');
+      if (categoriesResponse.data) {
+        setCategories(categoriesResponse.data);
+      }
       
-      // Set fallback data
-      setFullLocations({
-        states: ["Telangana", "Andhra Pradesh", "Karnataka"],
+    } catch (err) {
+      console.error('Error loading data in DataContext:', err);
+      setError('Failed to load directory data');
+      
+      // Set comprehensive fallback data
+      const fallbackLocations = {
+        states: ["Telangana", "Andhra Pradesh", "Karnataka", "Maharashtra", "Tamil Nadu"],
         cities: {
-          "Telangana": ["Hyderabad", "Warangal"],
-          "Andhra Pradesh": ["Vijayawada", "Guntur"],
-          "Karnataka": ["Bangalore", "Mysore"]
+          "Telangana": ["Hyderabad", "Warangal", "Karimnagar", "Nizamabad", "Khammam"],
+          "Andhra Pradesh": ["Vijayawada", "Guntur", "Visakhapatnam", "Tirupati", "Kurnool"],
+          "Karnataka": ["Bangalore", "Mysore", "Hubli", "Mangalore", "Belgaum"],
+          "Maharashtra": ["Mumbai", "Pune", "Nagpur", "Nashik", "Aurangabad"],
+          "Tamil Nadu": ["Chennai", "Coimbatore", "Madurai", "Salem", "Tiruchirappalli"]
         },
         mandals: {
-          "Hyderabad": ["Serilingampally", "Kukatpally"],
-          "Vijayawada": ["Vijayawada Urban", "Vijayawada Rural"],
-          "Bangalore": ["Bengaluru North", "Bengaluru South"]
+          "Hyderabad": ["Serilingampally", "Kukatpally", "Madhapur", "Gachibowli", "Banjara Hills"],
+          "Warangal": ["Warangal Urban", "Warangal Rural", "Hanamkonda", "Kazipet"],
+          "Vijayawada": ["Vijayawada Urban", "Vijayawada Rural", "Mylavaram", "Nandigama"],
+          "Bangalore": ["Bengaluru North", "Bengaluru South", "Bengaluru East", "Bengaluru West"],
+          "Mumbai": ["Mumbai City", "Mumbai Suburban", "Andheri", "Bandra", "Dadar"]
         }
-      });
+      };
       
+      setFullLocations(fallbackLocations);
       setLocations({ 
-        states: ["Telangana", "Andhra Pradesh", "Karnataka"],
+        states: fallbackLocations.states,
         cities: [],
         mandals: []
       });
@@ -79,12 +112,16 @@ export const DataProvider = ({ children }) => {
         stores: {
           "Grocery": ["Supermarket", "Kirana Store"],
           "Electronics": ["Mobile Shop", "Computer Shop"],
-          "Clothing": ["Footwear Shop", "Garment Shop"]
+          "Clothing": ["Footwear Shop", "Garment Shop"],
+          "Medical": ["Pharmacy", "Clinic"],
+          "Food": ["Restaurant", "Bakery"]
         },
         services: {
-          "Beauty": ["Salon", "Barber Shop"],
-          "Repair": ["Electrician", "Plumber"],
-          "Education": ["Tution", "Coaching"]
+          "Beauty": ["Salon", "Barber Shop", "Spa"],
+          "Repair": ["Electrician", "Plumber", "AC Repair"],
+          "Education": ["Tution", "Coaching", "Training Center"],
+          "Automobile": ["Car Service", "Bike Repair", "Tyre Shop"],
+          "Home": ["Cleaning", "Pest Control", "Painting"]
         }
       });
     } finally {
@@ -92,43 +129,45 @@ export const DataProvider = ({ children }) => {
     }
   };
 
-  // Function to get cities for a state
-  const getCitiesForState = (state) => {
-    return fullLocations.cities[state] || [];
+  // Get cities for a specific state
+  const getCitiesForState = (stateName) => {
+    return fullLocations.cities[stateName] || [];
   };
 
-  // Function to get mandals for a city
-  const getMandalsForCity = (city) => {
-    return fullLocations.mandals[city] || [];
+  // Get mandals for a specific city
+  const getMandalsForCity = (cityName) => {
+    return fullLocations.mandals[cityName] || [];
   };
 
-  // Function to get categories by type
-  const getCategoriesByType = (type) => {
-    return categories[type] || {};
-  };
-
-  // Function to get types for a category
-  const getTypesForCategory = (categoryType, category) => {
+  // Get service types for a category
+  const getServiceTypes = (categoryType, category) => {
     return categories[categoryType]?.[category] || [];
   };
 
+  // Initialize data
   useEffect(() => {
     loadData();
   }, []);
 
+  const value = {
+    // Data
+    locations,
+    fullLocations,
+    categories,
+    
+    // State
+    loading,
+    error,
+    
+    // Methods
+    getCitiesForState,
+    getMandalsForCity,
+    getServiceTypes,
+    reloadData: loadData
+  };
+
   return (
-    <DataContext.Provider value={{
-      locations,
-      fullLocations,
-      categories,
-      loading,
-      error,
-      getCitiesForState,
-      getMandalsForCity,
-      getCategoriesByType,
-      getTypesForCategory,
-      reloadData: loadData
-    }}>
+    <DataContext.Provider value={value}>
       {children}
     </DataContext.Provider>
   );
