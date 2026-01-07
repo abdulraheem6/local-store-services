@@ -173,6 +173,18 @@ export const fetchServices = async (filters = {}, page = 1, limit = 10) => {
   }
 };
 
+// Add registration function
+export const registerBusiness = async (businessData) => {
+  try {
+    const response = await api.post('/register', businessData);
+    return response.data;
+  } catch (error) {
+    console.error('Business Registration error:', error);
+    throw error;
+  }
+};
+
+
 // Fallback data functions
 const getFallbackData = (endpoint) => {
   console.log(`Using fallback data for: ${endpoint}`);
