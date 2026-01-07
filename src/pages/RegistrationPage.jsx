@@ -127,13 +127,11 @@ import './RegistrationPage.css';
 const RegistrationPage = ({ onStoreAdded }) => {
   const { theme } = useTheme();
  
-  // const { 
-  //   locations, 
-  //   fullLocations, 
-  //   categories,
-  //   loading: dataLoading,
-  //   error: dataError 
-  // } = useData();
+  const { 
+
+    loading: dataLoading,
+    error: dataError 
+  } = useData();
   
   const [registrationComplete, setRegistrationComplete] = useState(false);
   const [registeredStore, setRegisteredStore] = useState(null);
