@@ -180,7 +180,38 @@ const RegistrationPage = ({ onStoreAdded }) => {
         <div className="registration-container">
           {registrationComplete ? (
             <div className="success-container">
-              {/* Success content... */}
+                            <div className="success-icon">
+                <FaStore />
+              </div>
+              <h2>Business Registered Successfully!</h2>
+              <p className="success-message">
+                Thank you for registering <strong>{registeredStore?.name}</strong>. 
+                Your business will be reviewed and appear in our directory within 24-48 hours.
+              </p>
+              
+              <div className="success-actions">
+                <Link to="/stores" className="btn-primary">
+                  Browse Directory
+                </Link>
+                <button 
+                  onClick={() => {
+                    setRegistrationComplete(false);
+                    setRegisteredStore(null);
+                  }}
+                  className="btn-secondary"
+                >
+                  Register Another Business
+                </button>
+              </div>
+
+              <div className="info-box">
+                <h4><FaShieldAlt /> What's Next?</h4>
+                <ul>
+                  <li>Our team will review your submission within 24-48 hours</li>
+                  <li>You'll receive updates about your listing status</li>
+                  <li>You can contact support for any changes</li>
+                  <li>Your listing will appear under appropriate categories</li>
+                </ul>
             </div>
           ) : (
             <StoreRegistrationForm 
@@ -193,7 +224,7 @@ const RegistrationPage = ({ onStoreAdded }) => {
         </div>
 
         {/* Sidebar... */}
-                <aside className="registration-sidebar">
+        <aside className="registration-sidebar">
           <div className="sidebar-card">
             <h3>Why Register?</h3>
             <ul className="benefits-list">
