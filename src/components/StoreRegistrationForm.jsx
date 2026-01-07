@@ -1,0 +1,706 @@
+import React, { useState, useEffect } from 'react';
+import { FaStore, FaUser, FaPhone, FaMapMarkerAlt, FaClock, FaTag, FaUpload, FaCheck, FaTimes } from 'react-icons/fa';
+import { rateLimitService } from '../services/rateLimitService';
+import { verificationService } from '../services/verificationService';
+import './StoreRegistrationForm.css';
+
+const StoreRegistrationForm = ({ onStoreAdded }) => {
+  // Form states
+  const [step, setStep] = useState(1); // 1: Mobile, 2: OTP, 3: Details
+  const [formData, setFormData] = useState({
+    mobile: '',
+    otp: '',
+    name: '',
+    description: '',
+    state: '',
+    city: '',
+    mandal: '',
+    category: '',
+    serviceType: '',
+    ownerName: '',
+    phone: '',
+    timings: '',
+    tags: '',
+    address: '',
+    email: '',
+    website: ''
+  });
+
+  const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [otpTimer, setOtpTimer] = useState(0);
+  const [verificationStatus, setVerificationStatus] = useState({
+    mobileVerified: false,
+    otpSent: false,
+    canRegister: true
+  });
+
+  // Categories and types
+  const categories = [
+    'Grocery', 'Electronics', 'Medical', 'Food', 'Clothing',
+    'Automobile', 'Education', 'Fitness', 'Office', 'Home',
+    'Beauty', 'Hardware', 'Stationery', 'Pharmacy', 'Restaurant'
+  ];
+
+  const serviceTypes = [
+    'Retail', 'Service', 'Repair', 'Custom',
+    'Healthcare', 'Education', 'Food Service', 'Rental'
+  ];
+
+  const states = [
+    'Telangana', 'Andhra Pradesh', 'Karnataka', 'Maharashtra',
+    'Tamil Nadu', 'Kerala', 'Delhi', 'Uttar Pradesh'
+  ];
+
+  // Initialize rate limit check
+  useEffect(() => {
+    if (formData.mobile && formData.mobile.length === 10) {
+      const canRegister = rateLimitService.canRegister(formData.mobile);
+      setVerificationStatus(prev => ({
+        ...prev,
+        canRegister
+      }));
+    }
+  }, [formData.mobile]);
+
+  // OTP timer
+  useEffect(() => {
+    let timer;
+    if (otpTimer > 0) {
+      timer = setTimeout(() => setOtpTimer(otpTimer - 1), 1000);
+    }
+    return () => clearTimeout(timer);
+  }, [otpTimer]);
+
+  const validateStep1 = () => {
+    const newErrors = {};
+    const mobileRegex = /^[6-9]\d{9}$/;
+
+    if (!formData.mobile) {
+      newErrors.mobile = 'Mobile number is required';
+    } else if (!mobileRegex.test(formData.mobile)) {
+      newErrors.mobile = 'Please enter a valid Indian mobile number';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const validateStep2 = () => {
+    const newErrors = {};
+
+    if (!formData.otp) {
+      newErrors.otp = 'OTP is required';
+    } else if (formData.otp.length !== 6) {
+      newErrors.otp = 'OTP must be 6 digits';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const validateStep3 = () => {
+    const newErrors = {};
+
+    if (!formData.name.trim()) {
+      newErrors.name = 'Store name is required';
+    }
+    if (!formData.ownerName.trim()) {
+      newErrors.ownerName = 'Owner name is required';
+    }
+    if (!formData.category) {
+      newErrors.category = 'Category is required';
+    }
+    if (!formData.serviceType) {
+      newErrors.serviceType = 'Service type is required';
+    }
+    if (!formData.state) {
+      newErrors.state = 'State is required';
+    }
+    if (!formData.city.trim()) {
+      newErrors.city = 'City is required';
+    }
+    if (!formData.mandal.trim()) {
+      newErrors.mandal = 'Mandal/Taluk is required';
+    }
+    if (!formData.address.trim()) {
+      newErrors.address = 'Address is required';
+    }
+    if (!formData.phone.trim()) {
+      newErrors.phone = 'Contact number is required';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleMobileSubmit = async (e) => {
+    e.preventDefault();
+    if (!validateStep1()) return;
+
+    if (!verificationStatus.canRegister) {
+      const remaining = rateLimitService.getRemainingRegistrations(formData.mobile);
+      const history = rateLimitService.getRegistrationHistory(formData.mobile);
+      
+      setErrors({
+        mobile: `You have reached the maximum registrations (${remaining + 2}) this month.`
+      });
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const result = await verificationService.sendOTP(formData.mobile);
+      if (result.success) {
+        setVerificationStatus(prev => ({ ...prev, otpSent: true }));
+        setOtpTimer(300); // 5 minutes
+        setStep(2);
+      } else {
+        setErrors({ mobile: result.message });
+      }
+    } catch (error) {
+      setErrors({ mobile: 'Failed to send OTP. Please try again.' });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleOTPSubmit = async (e) => {
+    e.preventDefault();
+    if (!validateStep2()) return;
+
+    setLoading(true);
+    try {
+      const result = verificationService.verifyOTP(formData.mobile, formData.otp);
+      if (result.success) {
+        setVerificationStatus(prev => ({ ...prev, mobileVerified: true }));
+        setStep(3);
+      } else {
+        setErrors({ otp: result.message });
+      }
+    } catch (error) {
+      setErrors({ otp: 'Verification failed. Please try again.' });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleFormSubmit = async (e) => {
+    e.preventDefault();
+    if (!validateStep3()) return;
+
+    const newStore = {
+      id: Date.now().toString(),
+      ...formData,
+      tags: formData.tags.split(',').map(tag => tag.trim()).filter(tag => tag),
+      rating: 4.0,
+      verified: false
+    };
+
+    // Record the registration
+    rateLimitService.recordRegistration(formData.mobile);
+
+    // Store in local storage
+    const stores = JSON.parse(localStorage.getItem('user_stores') || '[]');
+    stores.push(newStore);
+    localStorage.setItem('user_stores', JSON.stringify(stores));
+
+    // Notify parent component
+    if (onStoreAdded) {
+      onStoreAdded(newStore);
+    }
+
+    // Reset form
+    setFormData({
+      mobile: '',
+      otp: '',
+      name: '',
+      description: '',
+      state: '',
+      city: '',
+      mandal: '',
+      category: '',
+      serviceType: '',
+      ownerName: '',
+      phone: '',
+      timings: '',
+      tags: '',
+      address: '',
+      email: '',
+      website: ''
+    });
+    
+    setStep(1);
+    alert('Store registered successfully! It will be reviewed before appearing in the directory.');
+  };
+
+  const handleResendOTP = async () => {
+    if (otpTimer > 0) return;
+
+    setLoading(true);
+    try {
+      const result = await verificationService.sendOTP(formData.mobile);
+      if (result.success) {
+        setOtpTimer(300);
+        alert('New OTP sent successfully');
+      } else {
+        setErrors({ otp: result.message });
+      }
+    } catch (error) {
+      setErrors({ otp: 'Failed to resend OTP' });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+    
+    // Clear error for this field
+    if (errors[name]) {
+      setErrors(prev => ({ ...prev, [name]: '' }));
+    }
+  };
+
+  const renderStep1 = () => (
+    <div className="registration-step">
+      <div className="step-header">
+        <div className="step-number active">1</div>
+        <h3>Mobile Verification</h3>
+      </div>
+      
+      <div className="step-content">
+        <div className="verification-info">
+          <FaPhone className="verification-icon" />
+          <p>Please verify your mobile number to proceed with store registration.</p>
+          <p className="info-note">You can register up to 2 stores per month with one mobile number.</p>
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="mobile">
+            <FaPhone /> Mobile Number *
+          </label>
+          <input
+            type="tel"
+            id="mobile"
+            name="mobile"
+            value={formData.mobile}
+            onChange={handleInputChange}
+            placeholder="Enter 10-digit mobile number"
+            maxLength="10"
+            className={errors.mobile ? 'error' : ''}
+          />
+          {errors.mobile && <span className="error-message">{errors.mobile}</span>}
+        </div>
+
+        {formData.mobile && verificationStatus.canRegister === false && (
+          <div className="rate-limit-warning">
+            <FaTimes />
+            <div>
+              <strong>Registration Limit Reached</strong>
+              <p>
+                You have registered {rateLimitService.getRegistrationHistory(formData.mobile).length} store(s) this month.
+                You can register again next month.
+              </p>
+            </div>
+          </div>
+        )}
+
+        {formData.mobile && verificationStatus.canRegister && (
+          <div className="rate-limit-info">
+            <FaCheck />
+            <div>
+              <strong>Registrations Available</strong>
+              <p>
+                You can register {rateLimitService.getRemainingRegistrations(formData.mobile)} more store(s) this month.
+              </p>
+            </div>
+          </div>
+        )}
+
+        <div className="form-actions">
+          <button
+            type="button"
+            onClick={handleMobileSubmit}
+            disabled={loading || !formData.mobile || !verificationStatus.canRegister}
+            className="btn-primary"
+          >
+            {loading ? 'Sending OTP...' : 'Send OTP'}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+
+  const renderStep2 = () => (
+    <div className="registration-step">
+      <div className="step-header">
+        <div className="step-number active">2</div>
+        <h3>Enter OTP</h3>
+      </div>
+      
+      <div className="step-content">
+        <div className="verification-info">
+          <FaCheck className="verification-icon" />
+          <p>OTP sent to <strong>{formData.mobile}</strong></p>
+          {otpTimer > 0 ? (
+            <p className="timer">Time remaining: {Math.floor(otpTimer / 60)}:{String(otpTimer % 60).padStart(2, '0')}</p>
+          ) : (
+            <p className="timer-expired">OTP expired</p>
+          )}
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="otp">
+            <FaCheck /> Enter 6-digit OTP *
+          </label>
+          <input
+            type="text"
+            id="otp"
+            name="otp"
+            value={formData.otp}
+            onChange={handleInputChange}
+            placeholder="Enter OTP"
+            maxLength="6"
+            className={errors.otp ? 'error' : ''}
+          />
+          {errors.otp && <span className="error-message">{errors.otp}</span>}
+        </div>
+
+        <div className="otp-actions">
+          <button
+            type="button"
+            onClick={handleResendOTP}
+            disabled={otpTimer > 0 || loading}
+            className="btn-secondary"
+          >
+            {otpTimer > 0 ? `Resend OTP in ${otpTimer}s` : 'Resend OTP'}
+          </button>
+          <button
+            type="button"
+            onClick={handleOTPSubmit}
+            disabled={loading || formData.otp.length !== 6}
+            className="btn-primary"
+          >
+            {loading ? 'Verifying...' : 'Verify OTP'}
+          </button>
+        </div>
+
+        <div className="back-link">
+          <button
+            type="button"
+            onClick={() => setStep(1)}
+            className="btn-text"
+          >
+            ← Change Mobile Number
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+
+  const renderStep3 = () => (
+    <div className="registration-step">
+      <div className="step-header">
+        <div className="step-number active">3</div>
+        <h3>Store Details</h3>
+      </div>
+      
+      <div className="step-content">
+        <div className="verification-info verified">
+          <FaCheck className="verification-icon" />
+          <p>Mobile <strong>{formData.mobile}</strong> verified successfully</p>
+        </div>
+
+        <form onSubmit={handleFormSubmit}>
+          <div className="form-section">
+            <h4>Basic Information</h4>
+            <div className="form-row">
+              <div className="form-group">
+                <label htmlFor="name">
+                  <FaStore /> Store Name *
+                </label>
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleInputChange}
+                  placeholder="Enter store name"
+                  className={errors.name ? 'error' : ''}
+                />
+                {errors.name && <span className="error-message">{errors.name}</span>}
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="ownerName">
+                  <FaUser /> Owner Name *
+                </label>
+                <input
+                  type="text"
+                  id="ownerName"
+                  name="ownerName"
+                  value={formData.ownerName}
+                  onChange={handleInputChange}
+                  placeholder="Enter owner name"
+                  className={errors.ownerName ? 'error' : ''}
+                />
+                {errors.ownerName && <span className="error-message">{errors.ownerName}</span>}
+              </div>
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="description">Store Description</label>
+              <textarea
+                id="description"
+                name="description"
+                value={formData.description}
+                onChange={handleInputChange}
+                placeholder="Describe your store, products, and services"
+                rows="3"
+              />
+            </div>
+
+            <div className="form-row">
+              <div className="form-group">
+                <label htmlFor="category">
+                  <FaTag /> Category *
+                </label>
+                <select
+                  id="category"
+                  name="category"
+                  value={formData.category}
+                  onChange={handleInputChange}
+                  className={errors.category ? 'error' : ''}
+                >
+                  <option value="">Select Category</option>
+                  {categories.map(cat => (
+                    <option key={cat} value={cat}>{cat}</option>
+                  ))}
+                </select>
+                {errors.category && <span className="error-message">{errors.category}</span>}
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="serviceType">Service Type *</label>
+                <select
+                  id="serviceType"
+                  name="serviceType"
+                  value={formData.serviceType}
+                  onChange={handleInputChange}
+                  className={errors.serviceType ? 'error' : ''}
+                >
+                  <option value="">Select Service Type</option>
+                  {serviceTypes.map(type => (
+                    <option key={type} value={type}>{type}</option>
+                  ))}
+                </select>
+                {errors.serviceType && <span className="error-message">{errors.serviceType}</span>}
+              </div>
+            </div>
+          </div>
+
+          <div className="form-section">
+            <h4>Location Details</h4>
+            <div className="form-row">
+              <div className="form-group">
+                <label htmlFor="state">
+                  <FaMapMarkerAlt /> State *
+                </label>
+                <select
+                  id="state"
+                  name="state"
+                  value={formData.state}
+                  onChange={handleInputChange}
+                  className={errors.state ? 'error' : ''}
+                >
+                  <option value="">Select State</option>
+                  {states.map(state => (
+                    <option key={state} value={state}>{state}</option>
+                  ))}
+                </select>
+                {errors.state && <span className="error-message">{errors.state}</span>}
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="city">City *</label>
+                <input
+                  type="text"
+                  id="city"
+                  name="city"
+                  value={formData.city}
+                  onChange={handleInputChange}
+                  placeholder="Enter city"
+                  className={errors.city ? 'error' : ''}
+                />
+                {errors.city && <span className="error-message">{errors.city}</span>}
+              </div>
+            </div>
+
+            <div className="form-row">
+              <div className="form-group">
+                <label htmlFor="mandal">Mandal/Taluk *</label>
+                <input
+                  type="text"
+                  id="mandal"
+                  name="mandal"
+                  value={formData.mandal}
+                  onChange={handleInputChange}
+                  placeholder="Enter mandal/taluk"
+                  className={errors.mandal ? 'error' : ''}
+                />
+                {errors.mandal && <span className="error-message">{errors.mandal}</span>}
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="phone">Contact Number *</label>
+                <input
+                  type="tel"
+                  id="phone"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleInputChange}
+                  placeholder="Store contact number"
+                  className={errors.phone ? 'error' : ''}
+                />
+                {errors.phone && <span className="error-message">{errors.phone}</span>}
+              </div>
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="address">Complete Address *</label>
+              <textarea
+                id="address"
+                name="address"
+                value={formData.address}
+                onChange={handleInputChange}
+                placeholder="Enter complete store address"
+                rows="2"
+                className={errors.address ? 'error' : ''}
+              />
+              {errors.address && <span className="error-message">{errors.address}</span>}
+            </div>
+          </div>
+
+          <div className="form-section">
+            <h4>Additional Information</h4>
+            <div className="form-row">
+              <div className="form-group">
+                <label htmlFor="timings">
+                  <FaClock /> Operating Hours
+                </label>
+                <input
+                  type="text"
+                  id="timings"
+                  name="timings"
+                  value={formData.timings}
+                  onChange={handleInputChange}
+                  placeholder="e.g., 9:00 AM - 9:00 PM"
+                />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="email">Email Address</label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  placeholder="Store email address"
+                />
+              </div>
+            </div>
+
+            <div className="form-row">
+              <div className="form-group">
+                <label htmlFor="website">Website</label>
+                <input
+                  type="url"
+                  id="website"
+                  name="website"
+                  value={formData.website}
+                  onChange={handleInputChange}
+                  placeholder="https://example.com"
+                />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="tags">Tags (comma separated)</label>
+                <input
+                  type="text"
+                  id="tags"
+                  name="tags"
+                  value={formData.tags}
+                  onChange={handleInputChange}
+                  placeholder="e.g., Delivery, 24/7, Home Service"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="form-actions">
+            <button
+              type="button"
+              onClick={() => setStep(2)}
+              className="btn-secondary"
+            >
+              ← Back
+            </button>
+            <button
+              type="submit"
+              disabled={loading}
+              className="btn-primary"
+            >
+              {loading ? 'Registering...' : 'Register Store'}
+            </button>
+          </div>
+
+          <div className="form-footer">
+            <p className="terms-note">
+              By registering, you agree to our Terms of Service. Your store will be reviewed 
+              and may take 24-48 hours to appear in the directory.
+            </p>
+            <p className="limit-note">
+              Remaining registrations this month: 
+              <strong> {rateLimitService.getRemainingRegistrations(formData.mobile) - 1}</strong>
+            </p>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="registration-form">
+      <div className="registration-header">
+        <h2>Register Your Store</h2>
+        <p>Add your business to our local directory in 3 simple steps</p>
+      </div>
+
+      <div className="registration-steps">
+        <div className={`step-indicator ${step >= 1 ? 'active' : ''}`}>
+          <span>1</span>
+          <p>Mobile Verification</p>
+        </div>
+        <div className={`step-indicator ${step >= 2 ? 'active' : ''}`}>
+          <span>2</span>
+          <p>OTP Verification</p>
+        </div>
+        <div className={`step-indicator ${step >= 3 ? 'active' : ''}`}>
+          <span>3</span>
+          <p>Store Details</p>
+        </div>
+      </div>
+
+      <div className="registration-content">
+        {step === 1 && renderStep1()}
+        {step === 2 && renderStep2()}
+        {step === 3 && renderStep3()}
+      </div>
+    </div>
+  );
+};
+
+export default StoreRegistrationForm;
