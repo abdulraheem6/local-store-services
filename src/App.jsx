@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback, lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, Link, useLocation } from 'react-router-dom';
 import { ThemeProvider, useTheme } from './context/ThemeContext';
+import { DataProvider } from './context/DataContext'
 import StoreCard from './components/storeCard';
 import FilterPanel from './components/FilterPanel';
 import Pagination from './components/Pagination';
@@ -656,6 +657,7 @@ function App() {
   return (
     <Router>
       <ThemeProvider>
+        <DataProvider>
         <Suspense fallback={<LoadingFallback />}>
           <Routes>
             <Route path="/" element={<AppContent />} />
@@ -667,6 +669,7 @@ function App() {
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </Suspense>
+         </DataProvider>
       </ThemeProvider>
     </Router>
   );
