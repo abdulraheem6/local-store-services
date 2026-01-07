@@ -222,9 +222,9 @@ const RegistrationPage = ({ onStoreAdded }) => {
           ) : (
             <StoreRegistrationForm 
               onStoreAdded={handleStoreAdded}
-              locations={locations}
+              {/* locations={locations}
               fullLocations={fullLocations}
-              categories={categories}
+              categories={categories} */}
             />
           )}
         </div>
