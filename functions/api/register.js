@@ -176,7 +176,7 @@ export async function onRequest({ request, env }) {
       // Read existing data from R2
       let existingData = [];
       try {
-        const existingFile = await env.R2_BUCKET.get(filePath);
+        const existingFile = await env.STORES_BUCKET.get(filePath);
         if (existingFile) {
           const fileContent = await existingFile.text();
           existingData = JSON.parse(fileContent);
@@ -200,7 +200,7 @@ export async function onRequest({ request, env }) {
       });
       
       // Save back to R2
-      await env.R2_BUCKET.put(
+      await env.STORES_BUCKET.put(
         filePath,
         JSON.stringify(existingData, null, 2),
         {
