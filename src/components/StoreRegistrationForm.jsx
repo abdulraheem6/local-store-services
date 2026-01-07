@@ -712,57 +712,19 @@ import { rateLimitService } from '../services/rateLimitService';
 import { verificationService } from '../services/verificationService';
 import axios from 'axios';
 import './StoreRegistrationForm.css';
+import { useData } from '../context/DataContext'; // Import useData
 
-// const StoreRegistrationForm = ({ onStoreAdded }) => {
-//   // Form states
-//   const [step, setStep] = useState(1);
-//   const [formData, setFormData] = useState({
-//     mobile: '',
-//     otp: '',
-//     name: '',
-//     description: '',
-//     state: '',
-//     city: '',
-//     mandal: '',
-//     category: '',
-//     serviceType: '',
-//     ownerName: '',
-//     phone: '',
-//     timings: '9:00 AM - 9:00 PM',
-//     tags: '',
-//     address: '',
-//     email: '',
-//     website: '',
-//     categoryType: 'stores' // 'stores' or 'services'
-//   });
+const StoreRegistrationForm = ({ onStoreAdded }) => {
+  // Get data from context
+  const { 
+    locations: dataLocations, 
+    fullLocations, 
+    categories,
+    getCitiesForState,
+    getMandalsForCity,
+    getServiceTypes
+  } = useData();
 
-//   const [errors, setErrors] = useState({});
-//   const [loading, setLoading] = useState(false);
-//   const [otpTimer, setOtpTimer] = useState(0);
-//   const [verificationStatus, setVerificationStatus] = useState({
-//     mobileVerified: false,
-//     otpSent: false,
-//     canRegister: true
-//   });
-      
-//   // Data from API for dropdowns
-//   const [locations, setLocations] = useState({
-//     states: [],
-//     cities: [],
-//     mandals: []
-//   });
-//   const [categories, setCategories] = useState({
-//     stores: {},
-//     services: {}
-//   });
-//   const [typeOptions, setTypeOptions] = useState([]);
-
-const StoreRegistrationForm = ({ 
-  onStoreAdded,
-  locations,
-  fullLocations,
-  categories 
-}) => {
   // Form states
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
@@ -794,198 +756,69 @@ const StoreRegistrationForm = ({
     canRegister: true
   });
 
+  // Local locations state derived from context
   const [availableLocations, setAvailableLocations] = useState({
-    states: locations?.states || [],
+    states: dataLocations?.states || [],
     cities: [],
     mandals: []
   });
 
   const [typeOptions, setTypeOptions] = useState([]);
-      
-  // Initialize data
-  // useEffect(() => {
-  //   const fetchDropdownData = async () => {
-  //     try {
-  //       const apiBaseUrl = import.meta.env.DEV ? 'http://localhost:8787/api' : '/api';
-        
-  //       // Fetch locations
-  //       const locationsResponse = await axios.get(`${apiBaseUrl}/locations`);
-  //       if (locationsResponse.data) {
-  //         setLocations({
-  //           states: Array.isArray(locationsResponse.data.states) ? locationsResponse.data.states : [],
-  //           cities: [],
-  //           mandals: []
-  //         });
-  //       }
-        
-  //       // Fetch categories
-  //       const categoriesResponse = await axios.get(`${apiBaseUrl}/categories`);
-  //       if (categoriesResponse.data) {
-  //         setCategories(categoriesResponse.data || { stores: {}, services: {} });
-  //       }
-  //     } catch (error) {
-  //       console.error('Error fetching dropdown data:', error);
-  //       // Set fallback data
-  //       setLocations({
-  //         states: ["Telangana", "Andhra Pradesh", "Karnataka", "Maharashtra", "Tamil Nadu"],
-  //         cities: [],
-  //         mandals: []
-  //       });
-        
-  //       setCategories({
-  //         stores: {
-  //           "Grocery": ["Supermarket", "Kirana Store"],
-  //           "Electronics": ["Mobile Shop", "Computer Shop"],
-  //           "Clothing": ["Footwear Shop", "Garment Shop"]
-  //         },
-  //         services: {
-  //           "Beauty": ["Salon", "Barber Shop"],
-  //           "Repair": ["Electrician", "Plumber"],
-  //           "Education": ["Tution", "Coaching"]
-  //         }
-  //       });
-  //     }
-  //   };
-    
-  //   fetchDropdownData();
-  // }, []);
 
- // Initialize with passed data
+  // Initialize with context data
   useEffect(() => {
-    if (locations) {
+    if (dataLocations?.states) {
       setAvailableLocations(prev => ({
         ...prev,
-        states: locations.states || []
+        states: dataLocations.states
       }));
     }
-  }, [locations]);
+  }, [dataLocations]);
 
-  // Update cities when state changes
+ // Update cities when state changes
   useEffect(() => {
-    if (formData.state && fullLocations?.cities) {
-      const citiesForState = fullLocations.cities[formData.state] || [];
+    if (formData.state) {
+      const citiesForState = getCitiesForState(formData.state);
       setAvailableLocations(prev => ({
         ...prev,
         cities: Array.isArray(citiesForState) ? citiesForState : [],
         mandals: []
       }));
+      setFormData(prev => ({ 
+        ...prev, 
+        city: '', 
+        mandal: '', 
+        category: '', 
+        serviceType: '' 
+      }));
     } else {
       setAvailableLocations(prev => ({ ...prev, cities: [], mandals: [] }));
     }
-  }, [formData.state, fullLocations]);
+  }, [formData.state, getCitiesForState]);
 
   // Update mandals when city changes
   useEffect(() => {
-    if (formData.state && formData.city && fullLocations?.mandals) {
-      const mandalsForCity = fullLocations.mandals[formData.city] || [];
+    if (formData.state && formData.city) {
+      const mandalsForCity = getMandalsForCity(formData.city);
       setAvailableLocations(prev => ({
         ...prev,
         mandals: Array.isArray(mandalsForCity) ? mandalsForCity : []
       }));
+      setFormData(prev => ({ 
+        ...prev, 
+        mandal: '', 
+        category: '', 
+        serviceType: '' 
+      }));
     } else {
       setAvailableLocations(prev => ({ ...prev, mandals: [] }));
     }
-  }, [formData.state, formData.city, fullLocations]);
-
-
-
-
-      
-  // Update cities when state changes
-  // useEffect(() => {
-  //   if (formData.state) {
-  //     // In real implementation, fetch cities for selected state
-  //     const fetchCities = async () => {
-  //       try {
-  //         const apiBaseUrl = import.meta.env.DEV ? 'http://localhost:8787/api' : '/api';
-  //         const response = await axios.get(`${apiBaseUrl}/locations/${formData.state}/cities`);
-  //         setLocations(prev => ({
-  //           ...prev,
-  //           cities: Array.isArray(response.data) ? response.data : [],
-  //           mandals: []
-  //         }));
-  //       } catch (error) {
-  //         console.error('Error fetching cities:', error);
-  //         // Fallback cities based on state
-  //         const fallbackCities = {
-  //           "Telangana": ["Hyderabad", "Warangal", "Karimnagar", "Nizamabad", "Khammam"],
-  //           "Andhra Pradesh": ["Vijayawada", "Guntur", "Visakhapatnam", "Tirupati", "Kurnool"],
-  //           "Karnataka": ["Bangalore", "Mysore", "Hubli", "Mangalore", "Belgaum"],
-  //           "Maharashtra": ["Mumbai", "Pune", "Nagpur", "Nashik", "Aurangabad"],
-  //           "Tamil Nadu": ["Chennai", "Coimbatore", "Madurai", "Salem", "Tiruchirappalli"]
-  //         };
-          
-  //         setLocations(prev => ({
-  //           ...prev,
-  //           cities: fallbackCities[formData.state] || [],
-  //           mandals: []
-  //         }));
-  //       }
-  //     };
-      
-  //     fetchCities();
-  //     setFormData(prev => ({ ...prev, city: '', mandal: '', category: '', serviceType: '' }));
-  //   } else {
-  //     setLocations(prev => ({ ...prev, cities: [], mandals: [] }));
-  //   }
-  // }, [formData.state]);
-
-  // Update mandals when city changes
-  // useEffect(() => {
-  //   if (formData.state && formData.city) {
-  //     // In real implementation, fetch mandals for selected city
-  //     const fetchMandals = async () => {
-  //       try {
-  //         const apiBaseUrl = import.meta.env.DEV ? 'http://localhost:8787/api' : '/api';
-  //         const response = await axios.get(`${apiBaseUrl}/locations/${formData.state}/${formData.city}/mandals`);
-  //         setLocations(prev => ({
-  //           ...prev,
-  //           mandals: Array.isArray(response.data) ? response.data : []
-  //         }));
-  //       } catch (error) {
-  //         console.error('Error fetching mandals:', error);
-  //         // Fallback mandals based on city
-  //         const fallbackMandals = {
-  //           "Hyderabad": ["Serilingampally", "Kukatpally", "Madhapur", "Gachibowli", "Banjara Hills"],
-  //           "Warangal": ["Warangal Urban", "Warangal Rural", "Hanamkonda", "Kazipet"],
-  //           "Vijayawada": ["Vijayawada Urban", "Vijayawada Rural", "Mylavaram", "Nandigama"],
-  //           "Bangalore": ["Bengaluru North", "Bengaluru South", "Bengaluru East", "Bengaluru West"],
-  //           "Mumbai": ["Mumbai City", "Mumbai Suburban", "Andheri", "Bandra", "Dadar"]
-  //         };
-          
-  //         setLocations(prev => ({
-  //           ...prev,
-  //           mandals: fallbackMandals[formData.city] || []
-  //         }));
-  //       }
-  //     };
-      
-  //     fetchMandals();
-  //     setFormData(prev => ({ ...prev, mandal: '', category: '', serviceType: '' }));
-  //   } else {
-  //     setLocations(prev => ({ ...prev, mandals: [] }));
-  //   }
-  // }, [formData.state, formData.city]);
-
-  // Update type options when category changes
-  // useEffect(() => {
-  //   if (formData.category && categories[formData.categoryType]) {
-  //     const types = categories[formData.categoryType][formData.category] || [];
-  //     setTypeOptions(Array.isArray(types) ? types : []);
-  //     setFormData(prev => ({ 
-  //       ...prev, 
-  //       serviceType: types.length > 0 ? types[0] : '' 
-  //     }));
-  //   } else {
-  //     setTypeOptions([]);
-  //     setFormData(prev => ({ ...prev, serviceType: '' }));
-  //   }
-  // }, [formData.category, formData.categoryType, categories]);
+  }, [formData.state, formData.city, getMandalsForCity]);
 
   // Update type options when category changes
   useEffect(() => {
     if (formData.category && categories && categories[formData.categoryType]) {
-      const types = categories[formData.categoryType][formData.category] || [];
+      const types = getServiceTypes(formData.categoryType, formData.category);
       setTypeOptions(Array.isArray(types) ? types : []);
       setFormData(prev => ({ 
         ...prev, 
@@ -995,7 +828,7 @@ const StoreRegistrationForm = ({
       setTypeOptions([]);
       setFormData(prev => ({ ...prev, serviceType: '' }));
     }
-  }, [formData.category, formData.categoryType, categories]);
+  }, [formData.category, formData.categoryType, categories, getServiceTypes]);
 
 
   // OTP timer
