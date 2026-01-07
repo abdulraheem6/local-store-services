@@ -387,7 +387,12 @@ async function handleStores(request, env) {
     
     if (state && city && mandal && category && type) {
       // Get stores from specific hierarchical path
-      const filePath = `stores/${state}/${city}/${mandal}/${category}/${type}/stores.json`;
+      //const filePath = `stores/${state}/${city}/${mandal}/${category}/${type}/stores.json`;
+      // Sanitize file names (replace spaces and special characters)
+      const sanitizePath = (str) => {
+        return str.replace(/[^a-zA-Z0-9]/g, '_');
+      };
+      const filePath = `stores/${sanitizePath(state)}/${sanitizePath(city)}/${sanitizePath(mandal)}/${sanitizePath(category)}/${sanitizePath(type)}/stores.json`;
       const storesData = await env.STORES_BUCKET.get(filePath);
       
       if (storesData) {
@@ -456,7 +461,13 @@ async function handleServices(request, env) {
     
     if (state && city && mandal && category && type) {
       // Get services from specific hierarchical path
-      const filePath = `services/${state}/${city}/${mandal}/${category}/${type}/services.json`;
+      //const filePath = `services/${state}/${city}/${mandal}/${category}/${type}/services.json`;
+      // Sanitize file names (replace spaces and special characters)
+      const sanitizePath = (str) => {
+        return str.replace(/[^a-zA-Z0-9]/g, '_');
+      };
+      const filePath = `services/${sanitizePath(state)}/${sanitizePath(city)}/${sanitizePath(mandal)}/${sanitizePath(category)}/${sanitizePath(type)}/services.json`;
+      
       const servicesData = await env.STORES_BUCKET.get(filePath);
       
       if (servicesData) {
