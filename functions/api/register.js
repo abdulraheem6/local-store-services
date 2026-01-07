@@ -146,8 +146,8 @@ export async function onRequest({ request, env }) {
       }
       
       // Check if R2 bucket is available
-      if (!env.R2_BUCKET) {
-        console.error('R2_BUCKET is not defined in environment');
+      if (!env.STORES_BUCKET) {
+        console.error('STORES_BUCKET is not defined in environment');
         return new Response(
           JSON.stringify({ 
             success: false, 
