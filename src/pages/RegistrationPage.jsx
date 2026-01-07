@@ -217,6 +217,7 @@ const RegistrationPage = ({ onStoreAdded }) => {
                   <li>You can contact support for any changes</li>
                   <li>Your listing will appear under appropriate categories</li>
                 </ul>
+                </div>
             </div>
           ) : (
             <StoreRegistrationForm 
