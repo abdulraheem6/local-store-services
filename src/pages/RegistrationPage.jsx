@@ -126,6 +126,11 @@ import './RegistrationPage.css';
 
 const RegistrationPage = ({ onStoreAdded }) => {
   const { theme } = useTheme();
+  RegistrationPage.defaultProps = {
+  locations: { states: [], cities: [], mandals: [] },
+  fullLocations: { states: [], cities: {}, mandals: {} },
+  categories: { stores: {}, services: {} }
+};
   const { 
     locations, 
     fullLocations, 
