@@ -1099,7 +1099,7 @@ const StoreRegistrationForm = ({ onStoreAdded }) => {
       const result = await verificationService.sendOTP(formData.mobile);
       if (result.success) {
         setOtpTimer(300);
-        alert('New OTP sent successfully, Enter this OTP' result.otpForTesting);
+        alert('New OTP sent successfully, Enter this OTP', result.otpForTesting);
       } else {
         setErrors({ otp: result.message });
       }
