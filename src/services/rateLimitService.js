@@ -3,27 +3,55 @@ class RateLimitService {
     this.storageKey = 'store_registrations';
     this.maxRegistrations = 2; // Max registrations per month
     this.resetPeriod = 30 * 24 * 60 * 60 * 1000; // 30 days in milliseconds
+    this.apiEndpoint = '/api/rate-limit'; // Your API endpoint
   }
 
   // Check if user can register
-  canRegister(mobileNumber) {
-    const registrations = this.getRegistrations();
-    const userRegistrations = registrations[mobileNumber] || [];
+  // canRegister(mobileNumber) {
+  //   const registrations = this.getRegistrations();
+  //   const userRegistrations = registrations[mobileNumber] || [];
     
-    // Remove expired registrations
-    const currentTime = Date.now();
-    const validRegistrations = userRegistrations.filter(
-      timestamp => (currentTime - timestamp) < this.resetPeriod
-    );
+  //   // Remove expired registrations
+  //   const currentTime = Date.now();
+  //   const validRegistrations = userRegistrations.filter(
+  //     timestamp => (currentTime - timestamp) < this.resetPeriod
+  //   );
     
-    // Update storage with valid registrations
-    if (validRegistrations.length !== userRegistrations.length) {
-      registrations[mobileNumber] = validRegistrations;
-      this.saveRegistrations(registrations);
+  //   // Update storage with valid registrations
+  //   if (validRegistrations.length !== userRegistrations.length) {
+  //     registrations[mobileNumber] = validRegistrations;
+  //     this.saveRegistrations(registrations);
+  //   }
+    
+  //   return validRegistrations.length < this.maxRegistrations;
+  // }
+
+  // Check if mobile number can register a store
+  async canRegister(mobileNumber) {
+    try {
+      const response = await fetch(this.apiEndpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ 
+          mobile: mobileNumber,
+          action: 'check'
+        })
+      });
+
+      const data = await response.json();
+      console.log(' can the registration done :', data.canRegister);
+      // Return true only if canRegister is true
+      return data.canRegister === true;
+      
+    } catch (error) {
+      console.error('Error checking registration:', error);
+      // Fallback: return true if API fails (optional - change to false if you want stricter)
+      return false;
     }
-    
-    return validRegistrations.length < this.maxRegistrations;
   }
+  
 
   // Record a new registration
   recordRegistration(mobileNumber) {
