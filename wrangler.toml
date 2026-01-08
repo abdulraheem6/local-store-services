@@ -11,3 +11,8 @@ preview_bucket_name = "stores-services-data-preview"
 ENVIRONMENT = "production"
 API_VERSION = "2.0"
 DATA_STRUCTURE = "hierarchical"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "registrations"
+database_id = "8639b1d5-8c68-4d75-8469-66536cf8872a"
