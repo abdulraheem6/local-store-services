@@ -100,14 +100,14 @@ const StoreCard = ({ item, categoryType = 'stores' }) => {
         {item.website && (
             <div className="detail-item">
               <FaGlobe />
-              <span>
-                <span className="detail-title">Website</span>
+              <div>
+                <span className="detail-title">Website: </span>
                 <span className="detail-value">
                   <a href={item.website} target="_blank" rel="noopener noreferrer">
                     Visit Website
                   </a>
                 </span>
-              </span>
+              </div>
             </div>
           )}
       </div>
