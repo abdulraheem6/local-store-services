@@ -159,7 +159,7 @@ export async function onRequest(context) {
           return new Response(
             JSON.stringify({ 
               canRegister: !existingRecord,  
-              message: existingRecord ? 'Mobile number already registered' : : 'Mobile number is available for registration'
+              message: existingRecord ? 'Mobile number already registered' : 'Mobile number is available for registration'
             }), 
             { status: 200 }
           );
