@@ -8,44 +8,91 @@
 // );
 
 
-
-
-
+// /functions/api/rate-limit.js
 // export async function onRequest(context) {
 //   const { request, env } = context;
   
 //   if (request.method === 'POST') {
-//     const data = await request.json();
-//     const { mobile } = data;
-    
-//     // Check rate limit in D1 database
-//     const result = await env.DB.prepare(
-//       `SELECT COUNT(*) as count FROM registrations 
-//        WHERE mobile = ? AND created_at > datetime('now', '-30 days')`
-//     ).bind(mobile).first();
-    
-//     if (result.count >= 2) {
+//     try {
+//       const data = await request.json();
+//       const { mobile } = data;
+      
+//       // Validate mobile number
+//       if (!mobile || typeof mobile !== 'string') {
+//         return new Response(
+//           JSON.stringify({ 
+//             canRegister: false,
+//             message: 'Valid mobile number is required'
+//           }), 
+//           { status: 400 }
+//         );
+//       }
+      
+//       // Clean and format mobile number
+//       const cleanMobile = mobile.replace(/\D/g, '');
+      
+//       // Simple validation for Indian mobile numbers
+//       if (cleanMobile.length !== 10 || !/^[6-9]/.test(cleanMobile)) {
+//         return new Response(
+//           JSON.stringify({ 
+//             canRegister: false,
+//             message: 'Invalid Indian mobile number'
+//           }), 
+//           { status: 400 }
+//         );
+//       }
+      
+//       const formattedMobile = `+91${cleanMobile}`;
+      
+//       // Check if mobile exists in database
+//       const existingRecord = await env.DB.prepare(
+//         `SELECT mobile FROM registrations WHERE mobile = ?`
+//       ).bind(formattedMobile).first();
+      
+//       // If mobile already exists, return false
+//       if (existingRecord) {
+//         return new Response(
+//           JSON.stringify({ 
+//             canRegister: false,
+//             message: 'Mobile number already registered. Only one store per number allowed.'
+//           }), 
+//           { status: 200 } // 200 OK with false response
+//         );
+//       }
+      
+//       // If mobile doesn't exist, add it to database
+//       const result = await env.DB.prepare(
+//         'INSERT INTO registrations (mobile) VALUES (?)'
+//       ).bind(formattedMobile).run();
+      
+//       if (result.success) {
+//         return new Response(
+//           JSON.stringify({ 
+//             canRegister: true,
+//             message: 'Registration successful'
+//           }), 
+//           { status: 200 }
+//         );
+//       } else {
+//         return new Response(
+//           JSON.stringify({ 
+//             canRegister: false,
+//             message: 'Registration failed'
+//           }), 
+//           { status: 500 }
+//         );
+//       }
+      
+//     } catch (error) {
+//       console.error('API Error:', error);
 //       return new Response(
 //         JSON.stringify({ 
-//           success: false, 
-//           message: 'Monthly limit reached' 
+//           canRegister: false,
+//           message: 'Internal server error'
 //         }), 
-//         { status: 429 }
+//         { status: 500 }
 //       );
 //     }
-    
-//     // Record registration
-//     await env.DB.prepare(
-//       'INSERT INTO registrations (mobile) VALUES (?)'
-//     ).bind(mobile).run();
-    
-//     return new Response(
-//       JSON.stringify({ 
-//         success: true, 
-//         remaining: 2 - (result.count + 1) 
-//       }), 
-//       { status: 200 }
-//     );
 //   }
   
 //   return new Response('Method not allowed', { status: 405 });
@@ -55,12 +102,14 @@
 export async function onRequest(context) {
   const { request, env } = context;
   
+  // Log for debugging
+  console.log('Database binding:', env.DB ? 'Available' : 'Not available');
+  
   if (request.method === 'POST') {
     try {
       const data = await request.json();
       const { mobile } = data;
       
-      // Validate mobile number
       if (!mobile || typeof mobile !== 'string') {
         return new Response(
           JSON.stringify({ 
@@ -74,7 +123,6 @@ export async function onRequest(context) {
       // Clean and format mobile number
       const cleanMobile = mobile.replace(/\D/g, '');
       
-      // Simple validation for Indian mobile numbers
       if (cleanMobile.length !== 10 || !/^[6-9]/.test(cleanMobile)) {
         return new Response(
           JSON.stringify({ 
@@ -87,40 +135,67 @@ export async function onRequest(context) {
       
       const formattedMobile = `+91${cleanMobile}`;
       
-      // Check if mobile exists in database
-      const existingRecord = await env.DB.prepare(
-        `SELECT mobile FROM registrations WHERE mobile = ?`
-      ).bind(formattedMobile).first();
-      
-      // If mobile already exists, return false
-      if (existingRecord) {
+      // Check if DB is available
+      if (!env.DB) {
+        console.error('D1 database not bound! Check wrangler.toml');
         return new Response(
           JSON.stringify({ 
             canRegister: false,
-            message: 'Mobile number already registered. Only one store per number allowed.'
+            message: 'Database connection error'
           }), 
-          { status: 200 } // 200 OK with false response
+          { status: 500 }
         );
       }
       
-      // If mobile doesn't exist, add it to database
-      const result = await env.DB.prepare(
-        'INSERT INTO registrations (mobile) VALUES (?)'
-      ).bind(formattedMobile).run();
-      
-      if (result.success) {
-        return new Response(
-          JSON.stringify({ 
-            canRegister: true,
-            message: 'Registration successful'
-          }), 
-          { status: 200 }
-        );
-      } else {
+      try {
+        // Check if mobile exists
+        const existingRecord = await env.DB.prepare(
+          `SELECT mobile FROM registrations WHERE mobile = ?`
+        ).bind(formattedMobile).first();
+        
+        console.log('Database query result:', existingRecord ? 'Found' : 'Not found');
+        
+        if (existingRecord) {
+          return new Response(
+            JSON.stringify({ 
+              canRegister: false,
+              message: 'Mobile number already registered'
+            }), 
+            { status: 200 }
+          );
+        }
+        
+        // Insert new registration
+        const result = await env.DB.prepare(
+          'INSERT INTO registrations (mobile) VALUES (?)'
+        ).bind(formattedMobile).run();
+        
+        console.log('Insert result:', result.success ? 'Success' : 'Failed');
+        
+        if (result.success) {
+          return new Response(
+            JSON.stringify({ 
+              canRegister: true,
+              message: 'Registration successful'
+            }), 
+            { status: 200 }
+          );
+        } else {
+          return new Response(
+            JSON.stringify({ 
+              canRegister: false,
+              message: 'Registration failed'
+            }), 
+            { status: 500 }
+          );
+        }
+        
+      } catch (dbError) {
+        console.error('Database error:', dbError);
         return new Response(
           JSON.stringify({ 
             canRegister: false,
-            message: 'Registration failed'
+            message: 'Database error occurred'
           }), 
           { status: 500 }
         );
@@ -138,5 +213,11 @@ export async function onRequest(context) {
     }
   }
   
-  return new Response('Method not allowed', { status: 405 });
+  return new Response(
+    JSON.stringify({ 
+      canRegister: false,
+      message: 'Method not allowed'
+    }), 
+    { status: 405 }
+  );
 }
