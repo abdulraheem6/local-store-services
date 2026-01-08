@@ -1078,7 +1078,7 @@ const StoreRegistrationForm = ({ onStoreAdded }) => {
         setVerificationStatus({
           mobileVerified: false,
           otpSent: false,
-          canRegister: true
+          canRegister: false
         });
         
         return true;
@@ -1178,7 +1178,7 @@ const StoreRegistrationForm = ({ onStoreAdded }) => {
             <div>
               <strong>Registration Limit Reached</strong>
               <p>
-                You have registered {rateLimitService.getRegistrationHistory(formData.mobile).length} business(es) this month.
+                You have registered already registered business(es) with this number support for additional registrations.
                 You can register again next month.
               </p>
             </div>
@@ -1191,7 +1191,7 @@ const StoreRegistrationForm = ({ onStoreAdded }) => {
             <div>
               <strong>Registrations Available</strong>
               <p>
-                You can register only register one business want more contact support team.
+                You can register only one business per number. want more registrations contact support team.
               </p>
             </div>
           </div>
