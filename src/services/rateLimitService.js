@@ -124,7 +124,8 @@ class RateLimitService {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ 
-          mobile: mobileNumber
+          mobile: mobileNumber,
+          action: "check"
         })
       });
 
@@ -143,6 +144,36 @@ class RateLimitService {
       return false; // Return false on error for safety
     }
   }
+
+    async recordRegistration(mobileNumber) {
+    try {
+      const response = await fetch(this.apiEndpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ 
+          mobile: mobileNumber,
+          action: "register"
+        })
+      });
+
+      if (!response.ok) {
+        // If API fails, return false to be safe
+        return false;
+      }
+
+      const data = await response.json();
+      
+      // Return the canRegister boolean directly
+      return data.canRegister === true;
+      
+    } catch (error) {
+      console.error('API call failed:', error);
+      return false; // Return false on error for safety
+    }
+  }
+ 
 }
 
 export const rateLimitService = new RateLimitService();
