@@ -1041,7 +1041,7 @@ const StoreRegistrationForm = ({ onStoreAdded }) => {
 
       if (response.data.success) {
         // Record the registration
-        // rateLimitService.recordRegistration(formData.mobile);
+         rateLimitService.recordRegistration(formData.mobile);
         
         // Store locally for immediate display
         const userBusinesses = JSON.parse(localStorage.getItem('user_businesses') || '[]');
