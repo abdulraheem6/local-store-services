@@ -956,7 +956,7 @@ const StoreRegistrationForm = ({ onStoreAdded }) => {
       const result = await verificationService.sendOTP(formData.mobile);
       if (result.success) {
         setVerificationStatus(prev => ({ ...prev, otpSent: true }));
-        setOtpTimer(300); // 5 minutes
+        setOtpTimer(60); // 1 minutes
         setStep(2);
       } else {
         setErrors({ mobile: result.message });
@@ -1099,7 +1099,12 @@ const StoreRegistrationForm = ({ onStoreAdded }) => {
       const result = await verificationService.sendOTP(formData.mobile);
       if (result.success) {
         setOtpTimer(300);
-        alert('New OTP sent successfully, Enter this OTP', result.otpForTesting);
+        //alert('New OTP sent successfully');
+          if (result.otpForTesting) {
+                alert(`New OTP sent.\nOTP: ${result.otpForTesting}`);
+          } else {
+                alert('New OTP sent successfully. Please check your messages.');
+          }
       } else {
         setErrors({ otp: result.message });
       }
