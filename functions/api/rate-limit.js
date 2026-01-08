@@ -108,7 +108,7 @@ export async function onRequest(context) {
   if (request.method === 'POST') {
     try {
       const data = await request.json();
-      const { mobile } = data;
+      const { mobile, action } = data;
       
       if (!mobile || typeof mobile !== 'string') {
         return new Response(
@@ -154,42 +154,58 @@ export async function onRequest(context) {
         ).bind(formattedMobile).first();
         
         console.log('Database query result:', existingRecord ? 'Found' : 'Not found');
-        
+
+        if (!action || action === 'check') {
+          return new Response(
+            JSON.stringify({ 
+              canRegister: !existingRecord,  
+              message: existingRecord ? 'Mobile number already registered' : : 'Mobile number is available for registration'
+            }), 
+            { status: 200 }
+          );
+        }
+
+
+      // If registering
+      if (action === 'register') {
         if (existingRecord) {
           return new Response(
             JSON.stringify({ 
-              canRegister: false,
-              message: 'Mobile number already registered'
+              canRegister: !existingRecord,  
+              message: existingRecord ? 'Mobile number already registered for business' : : 'Mobile number is available for registration'
             }), 
-            { status: 200 }
+            { status: 409 } // 409 Conflict
           );
         }
-        
-        // Insert new registration
-        const result = await env.DB.prepare(
-          'INSERT INTO registrations (mobile) VALUES (?)'
-        ).bind(formattedMobile).run();
-        
-        console.log('Insert result:', result.success ? 'Success' : 'Failed');
-        
-        if (result.success) {
-          return new Response(
-            JSON.stringify({ 
-              canRegister: true,
-              message: 'Registration successful'
-            }), 
-            { status: 200 }
-          );
-        } else {
-          return new Response(
-            JSON.stringify({ 
-              canRegister: false,
-              message: 'Registration failed'
-            }), 
-            { status: 500 }
-          );
+        if (!existingRecord) {
+              // Insert new registration
+              const result = await env.DB.prepare(
+                'INSERT INTO registrations (mobile) VALUES (?)'
+              ).bind(formattedMobile).run();
+              
+              console.log('Insert result:', result.success ? 'Success' : 'Failed');
+              
+              if (result.success) {
+                return new Response(
+                  JSON.stringify({ 
+                    canRegister: false,
+                    message: 'Registration successful'
+                  }), 
+                  { status: 200 }
+                );
+              } else {
+                return new Response(
+                  JSON.stringify({ 
+                    canRegister: true,
+                    message: 'Registration failed'
+                  }), 
+                  { status: 500 }
+                );
+              }
         }
-        
+      }
+         
+               
       } catch (dbError) {
         console.error('Database error:', dbError);
         return new Response(
