@@ -868,7 +868,7 @@ const StoreRegistrationForm = ({ onStoreAdded }) => {
   // Check rate limit
   useEffect(() => {
     if (formData.mobile && formData.mobile.length === 10) {
-      const canRegister = rateLimitService.canRegister(formData.mobile);
+      const canRegister = await rateLimitService.canRegister(formData.mobile);
       console.log('Printing output of canRegister', canRegister );
       setVerificationStatus(prev => ({
         ...prev,
