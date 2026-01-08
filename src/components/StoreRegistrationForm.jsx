@@ -755,7 +755,7 @@ const StoreRegistrationForm = ({ onStoreAdded }) => {
   const [verificationStatus, setVerificationStatus] = useState({
     mobileVerified: false,
     otpSent: false,
-    canRegister: true
+    canRegister: false
   });
 
   // Local locations state derived from context with safe defaults
