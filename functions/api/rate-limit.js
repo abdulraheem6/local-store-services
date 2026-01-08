@@ -1,4 +1,16 @@
 // // Save this in /functions/api/rate-limit.js
+
+
+// -- Simple table to store mobile numbers
+// CREATE TABLE IF NOT EXISTS registrations (
+//   mobile TEXT PRIMARY KEY,
+//   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+// );
+
+
+
+
+
 // export async function onRequest(context) {
 //   const { request, env } = context;
   
