@@ -944,9 +944,9 @@ const StoreRegistrationForm = ({ onStoreAdded }) => {
     if (!validateStep1()) return;
 
     if (!verificationStatus.canRegister) {
-      const remaining = rateLimitService.getRemainingRegistrations(formData.mobile);
+      //const remaining = rateLimitService.getRemainingRegistrations(formData.mobile);
       setErrors({
-        mobile: `You have reached the maximum registrations (${remaining + 2}) this month.`
+        mobile: `You have reached the maximum registrations 1 , Need to register more contact support.`
       });
       return;
     }
@@ -1186,7 +1186,7 @@ const StoreRegistrationForm = ({ onStoreAdded }) => {
             <div>
               <strong>Registrations Available</strong>
               <p>
-                You can register {rateLimitService.getRemainingRegistrations(formData.mobile)} more business(es) this month.
+                You can register only register one business want more contact support team.
               </p>
             </div>
           </div>
@@ -1581,8 +1581,8 @@ const StoreRegistrationForm = ({ onStoreAdded }) => {
               and may take 24-48 hours to appear in the directory.
             </p>
             <p className="limit-note">
-              Remaining registrations this month: 
-              <strong> {rateLimitService.getRemainingRegistrations(formData.mobile) - 1}</strong>
+              Remaining registrations : 
+              <strong> 0 for more regiatrations contact support </strong>
             </p>
           </div>
         </form>
