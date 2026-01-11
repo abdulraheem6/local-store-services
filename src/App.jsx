@@ -518,7 +518,6 @@ function AppContent() {
 
               {!searchPerformed ? (
                 <AdsSection ads={adsData} />
-                {/* Register Store Card in Sidebar */}
                <div className="register-promo-card">
                 <h3>Own a Business?</h3>
                 <p>Register your store or service in our directory</p>
