@@ -472,7 +472,7 @@ function AppContent() {
               {theme === 'dark' ? '☀️ Light Mode' : '🌙 Dark Mode'}
             </button>
           </div>
-          <div className="search-bar-container">
+          {/* <div className="search-bar-container">
                    <input
                      type="text"
                      placeholder="Search for stores, services..."
@@ -481,7 +481,7 @@ function AppContent() {
                      className="global-search"
                    />
                    <button className="search-btn">🔍</button>
-            </div>
+            </div> */}
         </header>
 
         <main className="app-main">
