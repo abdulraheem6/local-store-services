@@ -1,5 +1,5 @@
 import React from 'react';
-import StoreCard from './StoreCard';
+import StoreCard from './storeCard';
 import './ListView.css';
 
 const ListView = ({ items, categoryType, onItemSelect, sortBy }) => {
