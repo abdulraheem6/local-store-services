@@ -232,7 +232,46 @@ const FilterPanel = ({
               Clear All
             </button>
           )}
+
+          {/*  */}
+          
+          {/*  */}
         </div>
+        {/*Desktop ICon starthere */}
+        <div className="filter-group filter-actions desktop-only">
+          <button 
+            onClick={onSearch}
+            className={`search-btn ${isSearchEnabled ? 'enabled' : 'disabled'}`}
+            disabled={!isSearchEnabled}
+          >
+            <FaSearch />
+            Search {categoryType === 'stores' ? 'Stores' : 'Services'}
+          </button>
+          
+          {allFiltersSelected && (
+            <button 
+              onClick={onClearFilters}
+              className="clear-filters-btn"
+            >
+              <FaTimes />
+              Clear All
+            </button>
+          )}
+        </div>
+        {/* above line end */}
+        {/* mobile view starhere  */}
+        {/* Mobile Search Button (Fixed at bottom) */}
+        <div className="mobile-search-container">
+          <button 
+            onClick={onSearch}
+            className={`mobile-search-btn ${isSearchEnabled ? 'enabled' : 'disabled'}`}
+            disabled={!isSearchEnabled}
+          >
+            <FaSearch />
+            <span>Search {categoryType === 'stores' ? 'Stores' : 'Services'}</span>
+          </button>
+        </div>
+        {/* endhere */}
       </div>
 
       {/* Active Filters Display */}
