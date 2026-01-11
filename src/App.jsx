@@ -75,8 +75,13 @@ function AppContent() {
     mandal: '',
     category: '',
     type: ''
-  });
-
+  }); 
+ // search based on location by default testing
+  const [searchQuery, setSearchQuery] = useState('');
+  // Add this state for search testing
+  const [filteredItems, setFilteredItems] = useState([]);
+  const [searchActive, setSearchActive] = useState(false);
+  
   // Check if we're on a specific route
   const location = useLocation();
   const isHomePage = location.pathname === '/';
@@ -291,6 +296,93 @@ function AppContent() {
     );
   }, [filters]);
 
+  /////// belowe code for testing
+  // Updated handleSearchQuery function
+const handleSearchQuery = (query) => {
+  setSearchQuery(query);
+  
+  if (!query.trim()) {
+    // If search query is empty, show all items
+    setFilteredItems(items);
+    setSearchActive(false);
+    return;
+  }
+  
+  setSearchActive(true);
+  
+  // Search logic for stores/services
+  const searchResults = searchInItems(query, items);
+  setFilteredItems(searchResults);
+  
+  // Update pagination for search results
+  setTotalItems(searchResults.length);
+  setTotalPages(Math.ceil(searchResults.length / itemsPerPage));
+  
+  // Reset to first page when searching
+  setCurrentPage(1);
+};
+
+// Search function to search in items
+const searchInItems = (query, itemsToSearch) => {
+  if (!query.trim() || !itemsToSearch.length) return itemsToSearch;
+  
+  const searchTerm = query.toLowerCase().trim();
+  
+  return itemsToSearch.filter(item => {
+    // Search in multiple fields
+    const searchFields = [
+      item.name?.toLowerCase(),
+      item.description?.toLowerCase(),
+      item.category?.toLowerCase(),
+      item.type?.toLowerCase(),
+      item.location?.toLowerCase(),
+      item.address?.toLowerCase(),
+      item.city?.toLowerCase(),
+      item.state?.toLowerCase(),
+      item.mandal?.toLowerCase(),
+      // Add any other fields you want to search
+    ].filter(Boolean); // Remove undefined/null fields
+    
+    // Check if any field contains the search term
+    return searchFields.some(field => field.includes(searchTerm));
+  });
+};
+
+// Function to handle advanced search with filters
+const handleAdvancedSearch = (searchQuery, locationQuery = '') => {
+  if (!searchQuery.trim()) {
+    window.alert('Please enter a search term');
+    return;
+  }
+  
+  setSearchQuery(searchQuery);
+  setSearchActive(true);
+  
+  // If we have location query, try to set location filters
+  if (locationQuery && locationQuery !== 'Current Location') {
+    // You can implement location-based filtering here
+    console.log('Location search:', locationQuery);
+  }
+  
+  // Search in all items
+  const searchResults = searchInItems(searchQuery, items);
+  setFilteredItems(searchResults);
+  
+  // Update pagination
+  setTotalItems(searchResults.length);
+  setTotalPages(Math.ceil(searchResults.length / itemsPerPage));
+  setCurrentPage(1);
+  
+  // Show message if no results
+  if (searchResults.length === 0) {
+    setError(`No results found for "${searchQuery}"`);
+  } else {
+    setError(null);
+  }
+};
+
+  /// above code for test
+  
   const handleSearch = async () => {
     if (!isSearchEnabled()) {
       console.log('Search not enabled. Missing filters:', filters);
