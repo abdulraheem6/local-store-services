@@ -518,14 +518,7 @@ function AppContent() {
 
               {!searchPerformed ? (
                 <AdsSection ads={adsData} />
-               <div className="register-promo-card">
-                <h3>Own a Business?</h3>
-                <p>Register your store or service in our directory</p>
-                <Link to="/register" className="register-promo-btn">
-                  Add Your Business
-                </Link>
-              </div>
-              <AboutSection aboutData={aboutData} categoryType={categoryType} />
+               <AboutSection aboutData={aboutData} categoryType={categoryType} />
               ) : (
                 <div className="stores-container">
                   <div className="results-info">
