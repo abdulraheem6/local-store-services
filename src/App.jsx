@@ -517,7 +517,6 @@ function AppContent() {
               />
 
               {!searchPerformed ? (
-                <AdsSection ads={adsData} />
                <AboutSection aboutData={aboutData} categoryType={categoryType} />
               ) : (
                 <div className="stores-container">
