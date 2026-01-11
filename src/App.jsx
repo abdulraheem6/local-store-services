@@ -487,23 +487,7 @@ function AppContent() {
         <main className="app-main">
           <div className="content-wrapper">
             {/* Left Sidebar */}
-            <aside className="sidebar left-sidebar">
-              <CategorySelector 
-                categoryType={categoryType}
-                onCategoryTypeChange={handleCategoryTypeChange}
-                categories={categories}
-              />
-              <AdsSection ads={adsData} />
-              
-              {/* Register Store Card in Sidebar */}
-              <div className="register-promo-card">
-                <h3>Own a Business?</h3>
-                <p>Register your store or service in our directory</p>
-                <Link to="/register" className="register-promo-btn">
-                  Add Your Business
-                </Link>
-              </div>
-            </aside>
+
 
             {/* Main Content */}
             <div className="main-content">
@@ -605,6 +589,26 @@ function AppContent() {
               )}
             </div>
 
+            {/* Left Sidebar */}
+            <aside className="sidebar left-sidebar">
+              <CategorySelector 
+                categoryType={categoryType}
+                onCategoryTypeChange={handleCategoryTypeChange}
+                categories={categories}
+              />
+              <AdsSection ads={adsData} />
+              
+              {/* Register Store Card in Sidebar */}
+              <div className="register-promo-card">
+                <h3>Own a Business?</h3>
+                <p>Register your store or service in our directory</p>
+                <Link to="/register" className="register-promo-btn">
+                  Add Your Business
+                </Link>
+              </div>
+            </aside>
+
+            
             {/* Right Sidebar */}
             <aside className="sidebar right-sidebar">
               <AdsSection ads={adsData?.slice(0, 2)} />
