@@ -492,6 +492,16 @@ function AppContent() {
                 onCategoryTypeChange={handleCategoryTypeChange}
                 categories={categories}
               />
+             <div className="search-bar-container">
+                   <input
+                     type="text"
+                     placeholder="Search for stores, services..."
+                     value={searchQuery}
+                     onChange={(e) => handleSearchQuery(e.target.value)}
+                     className="global-search"
+              />
+              <button className="search-btn">🔍</button>
+            </div>
            </aside>
             {/* Main Content */}
             <div className="main-content">
