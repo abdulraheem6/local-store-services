@@ -464,7 +464,17 @@ function AppContent() {
           <div className="header-content">
             <div>
               <h1>{aboutData?.title || "Local Stores & Services Directory"}</h1>
-              <p>{aboutData?.description || "Find businesses organized by location hierarchy"}</p>
+              {/* <p>{aboutData?.description || "Find businesses organized by location hierarchy"}</p> */}
+                 <div className="search-bar-container">
+                   <input
+                     type="text"
+                     placeholder="Search for stores, services..."
+                     value={searchQuery}
+                     onChange={(e) => handleSearchQuery(e.target.value)}
+                     className="global-search"
+                   />
+                   <button className="search-btn">🔍</button>
+                 </div>
               {error && !searchPerformed && (
                 <small className="warning-text">⚠️ Using fallback data - API connection issue</small>
               )}
