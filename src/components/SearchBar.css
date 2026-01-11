@@ -1,0 +1,142 @@
+.search-bar-container {
+  width: 100%;
+  position: relative;
+  z-index: 100;
+}
+
+.search-form {
+  width: 100%;
+}
+
+.search-input-group {
+  display: flex;
+  gap: 10px;
+  background: white;
+  border-radius: 12px;
+  padding: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  border: 2px solid transparent;
+  transition: all 0.3s ease;
+}
+
+.app.dark .search-input-group {
+  background: #37474f;
+  color: white;
+}
+
+.search-bar-container.expanded .search-input-group {
+  border-color: #2196f3;
+  box-shadow: 0 6px 25px rgba(33, 150, 243, 0.2);
+}
+
+.search-field,
+.location-field {
+  flex: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-icon,
+.location-icon {
+  position: absolute;
+  left: 15px;
+  color: #666;
+  font-size: 18px;
+}
+
+.app.dark .search-icon,
+.app.dark .location-icon {
+  color: #ccc;
+}
+
+.search-input,
+.location-input {
+  width: 100%;
+  padding: 15px 15px 15px 45px;
+  border: 2px solid #eee;
+  border-radius: 8px;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  background: transparent;
+  color: inherit;
+}
+
+.app.dark .search-input,
+.app.dark .location-input {
+  border-color: #455a64;
+  color: white;
+}
+
+.search-input:focus,
+.location-input:focus {
+  outline: none;
+  border-color: #2196f3;
+}
+
+.clear-search {
+  position: absolute;
+  right: 15px;
+  background: none;
+  border: none;
+  color: #999;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 0;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.clear-search:hover {
+  color: #f44336;
+}
+
+.current-location-btn {
+  position: absolute;
+  right: 15px;
+  background: none;
+  border: none;
+  color: #2196f3;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.3s ease;
+}
+
+.current-location-btn:hover {
+  transform: scale(1.2);
+}
+
+.search-submit {
+  padding: 0 30px;
+  background: #2196f3;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.search-submit:hover {
+  background: #1976d2;
+  transform: translateY(-1px);
+}
+
+.search-suggestions {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 0;
+  right: 0;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+  padding: 20px;
+  max-height: 500px;
+  overflow-y: auto;
+  z-index: 
