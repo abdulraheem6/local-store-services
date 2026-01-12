@@ -950,6 +950,7 @@ const StoreRegistrationForm = ({ onStoreAdded }) => {
 
     if (!verificationStatus.canRegister) {
       //const remaining = rateLimitService.getRemainingRegistrations(formData.mobile);
+      console.log("failing");
       setErrors({
         mobile: `You have reached the maximum registrations 1 , Need to register more contact support.`
       });
@@ -957,7 +958,7 @@ const StoreRegistrationForm = ({ onStoreAdded }) => {
     }
 
     setLoading(true);
-    try {
+    try {      
       const result = await verificationService.sendOTP(formData.mobile);
       if (result.success) {
         setVerificationStatus(prev => ({ ...prev, otpSent: true }));
