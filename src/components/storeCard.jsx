@@ -56,7 +56,7 @@ const StoreCard = ({ item, categoryType = 'stores' }) => {
               </div>
             </div>
           </div>
-
+{/* 
           {item.phone && (
             <div className="detail-item">
               <FaPhone />
@@ -65,7 +65,7 @@ const StoreCard = ({ item, categoryType = 'stores' }) => {
                 <div className="detail-value">{item.phone}</div>
               </div>
             </div>
-          )}
+          )} */}
 
           {item.timings && (
             <div className="detail-item">
@@ -100,14 +100,12 @@ const StoreCard = ({ item, categoryType = 'stores' }) => {
         {item.website && (
             <div className="detail-item">
               <FaGlobe />
-              <div>
                 <span className="detail-title">Website: </span>
                 <span className="detail-value">
                   <a href={item.website} target="_blank" rel="noopener noreferrer">
                     Visit Website
                   </a>
                 </span>
-              </div>
             </div>
           )}
       </div>
