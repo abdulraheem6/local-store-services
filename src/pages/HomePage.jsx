@@ -135,7 +135,7 @@ const HomePage = () => {
                 <FaExternalLinkAlt />
               </a>
                {/* Sports Service - Mobile */}
-              <a href="https://example-sports.com" target="_blank" rel="noopener noreferrer" className="mobile-service-link">
+              <a href="https://cricket-tournament.pages.dev" target="_blank" rel="noopener noreferrer" className="mobile-service-link">
                 <FaFutbol />
                 <span>Sports Academy</span>
                 <FaExternalLinkAlt />
