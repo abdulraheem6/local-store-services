@@ -760,7 +760,7 @@ function App() {
         <DataProvider>
         <Suspense fallback={<LoadingFallback />}>
           <Routes>
-            <Route path="/" element={<AppContent />} />
+            <Route path="/" element={<HomePage />} />
             <Route path="/stores" element={<AppContent />} />
             <Route 
               path="/register" 
