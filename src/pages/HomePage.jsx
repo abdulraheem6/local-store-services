@@ -10,7 +10,7 @@ const HomePage = () => {
       <section className="hero-section">
         <div className="hero-content">
           <h1 className="hero-title">
-            Discover & Connect with <span className="highlight">Local Stores</span>
+            Discover & Connect with <span className="highlight">Local Stores/Services</span>
           </h1>
           <p className="hero-description">
             Find the best local shops, services, and businesses in your area. 
@@ -23,7 +23,7 @@ const HomePage = () => {
             </Link>
             <Link to="/register" className="btn-secondary hero-btn">
               <FaStore />
-              <span>Register Store</span>
+              <span>Register Business</span>
             </Link>
           </div>
         </div>
@@ -31,7 +31,7 @@ const HomePage = () => {
           <div className="floating-cards">
             <div className="floating-card card1">
               <FaStore />
-              <span>Local Shops</span>
+              <span>Local Shops/Services</span>
             </div>
             <div className="floating-card card2">
               <FaMapMarkerAlt />
@@ -60,7 +60,7 @@ const HomePage = () => {
               <FaStore />
             </div>
             <h3>Free Listing</h3>
-            <p>Register your store for free. No hidden charges or subscription fees.</p>
+            <p>Register your store/service for free. No hidden charges or subscription fees.</p>
           </div>
           <div className="feature-card">
             <div className="feature-icon">
@@ -76,7 +76,7 @@ const HomePage = () => {
       <section className="cta-section">
         <div className="cta-content">
           <h2>Ready to Grow Your Business?</h2>
-          <p>Register your store in just 3 minutes and start reaching more customers today.</p>
+          <p>Register your store/service in just 3 minutes and start reaching more customers today.</p>
           <Link to="/register" className="cta-btn">
             <span>Register Now</span>
             <FaArrowRight />
@@ -101,7 +101,7 @@ const HomePage = () => {
           </div>
           <div className="stat-item">
             <h3>Free</h3>
-            <p>Forever Free Plan</p>
+            <p>Forever Free Plan for One business</p>
           </div>
         </div>
       </section>
