@@ -75,6 +75,18 @@ const HomePage = () => {
                   <span>Real Estate</span>
                   <FaExternalLinkAlt className="external-icon" />
                 </a>
+                          {/* Sports Service */}
+                <a href="https://example-sports.com" target="_blank" rel="noopener noreferrer" className="dropdown-item">
+                  <FaFutbol />
+                  <span>Sports Academy</span>
+                  <FaExternalLinkAlt className="external-icon" />
+                </a>
+                {/* Education Service */}
+                <a href="https://example-education.com" target="_blank" rel="noopener noreferrer" className="dropdown-item">
+                  <FaGraduationCap />
+                  <span>Education Portal</span>
+                  <FaExternalLinkAlt className="external-icon" />
+                </a>
               </div>
             </div>
           </div>
@@ -118,6 +130,18 @@ const HomePage = () => {
               <a href="https://example-realestate.com" target="_blank" rel="noopener noreferrer" className="mobile-service-link">
                 <FaMapMarkerAlt />
                 <span>Real Estate</span>
+                <FaExternalLinkAlt />
+              </a>
+               {/* Sports Service - Mobile */}
+              <a href="https://example-sports.com" target="_blank" rel="noopener noreferrer" className="mobile-service-link">
+                <FaFutbol />
+                <span>Sports Academy</span>
+                <FaExternalLinkAlt />
+              </a>
+              {/* Education Service - Mobile */}
+              <a href="https://example-education.com" target="_blank" rel="noopener noreferrer" className="mobile-service-link">
+                <FaGraduationCap />
+                <span>Education Portal</span>
                 <FaExternalLinkAlt />
               </a>
             </div>
