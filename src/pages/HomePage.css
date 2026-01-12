@@ -1334,5 +1334,41 @@
   }
 }
 
+
+
+
 /* Keep all existing styles from previous CSS and add these new ones */
 /* Ensure no conflicts with existing styles */
+
+
+/* Add these icon styles to your existing CSS */
+.dropdown-item svg,
+.mobile-service-link svg {
+  color: var(--secondary-color);
+  font-size: 1.125rem;
+}
+
+/* Specific icons for Sports and Education */
+.fa-futbol {
+  color: #27ae60; /* Green for sports */
+}
+
+.fa-graduation-cap {
+  color: #9b59b6; /* Purple for education */
+}
+
+.fa-shopping-bag {
+  color: #e74c3c; /* Red for e-commerce */
+}
+
+.fa-store {
+  color: #3498db; /* Blue for food delivery */
+}
+
+.fa-users {
+  color: #f39c12; /* Orange for job portal */
+}
+
+.fa-map-marker-alt {
+  color: #1abc9c; /* Teal for real estate */
+}
