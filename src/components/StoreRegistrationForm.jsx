@@ -1185,7 +1185,7 @@ const StoreRegistrationForm = ({ onStoreAdded }) => {
           </div>
         )}
 
-        {formData.mobile && verificationStatus.canRegister && (
+        {formData.mobile && formData.mobile.length >= 10 && verificationStatus.canRegister && (
           <div className="rate-limit-info">
             <FaCheck />
             <div>
@@ -1201,7 +1201,7 @@ const StoreRegistrationForm = ({ onStoreAdded }) => {
           <button
             type="button"
             onClick={handleMobileSubmit}
-            disabled={loading || !formData.mobile || !verificationStatus.canRegister}
+            disabled={loading || !formData.mobile || !formData.mobile.length >= 10 && || !verificationStatus.canRegister}
             className="btn-primary"
           >
             {loading ? 'Sending OTP...' : 'Send OTP'}
