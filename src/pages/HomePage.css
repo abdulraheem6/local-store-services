@@ -746,3 +746,593 @@
     font-size: 1.125rem;
   }
 }
+
+/*  */
+/* Modern Navbar Styles */
+.modern-navbar {
+  background: white;
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  padding: 0.75rem 0;
+}
+
+.nav-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.nav-brand {
+  display: flex;
+  align-items: center;
+}
+
+.brand-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  text-decoration: none;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--dark-color);
+}
+
+.logo-icon {
+  color: var(--secondary-color);
+  font-size: 1.75rem;
+}
+
+.brand-highlight {
+  color: var(--secondary-color);
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.nav-link {
+  text-decoration: none;
+  color: var(--gray-color);
+  font-weight: 500;
+  padding: 0.5rem 0;
+  position: relative;
+  transition: color 0.3s ease;
+}
+
+.nav-link:hover,
+.nav-link.active {
+  color: var(--secondary-color);
+}
+
+.nav-link.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: var(--secondary-color);
+  border-radius: 2px;
+}
+
+/* Dropdown Styles */
+.nav-dropdown {
+  position: relative;
+}
+
+.dropdown-toggle {
+  background: none;
+  border: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--gray-color);
+  font-weight: 500;
+  cursor: pointer;
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.dropdown-toggle:hover {
+  background: rgba(52, 152, 219, 0.05);
+  color: var(--secondary-color);
+}
+
+.dropdown-arrow {
+  font-size: 0.875rem;
+  transition: transform 0.3s ease;
+}
+
+.dropdown-toggle:hover .dropdown-arrow {
+  transform: rotate(90deg);
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: white;
+  min-width: 280px;
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  padding: 0.75rem;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(10px);
+  transition: all 0.3s ease;
+  z-index: 1000;
+}
+
+.nav-dropdown:hover .dropdown-menu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  text-decoration: none;
+  color: var(--dark-color);
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+.dropdown-item:hover {
+  background: rgba(52, 152, 219, 0.05);
+  color: var(--secondary-color);
+  transform: translateX(5px);
+}
+
+.dropdown-item svg {
+  color: var(--secondary-color);
+  font-size: 1.125rem;
+}
+
+.external-icon {
+  margin-left: auto;
+  font-size: 0.875rem;
+  opacity: 0.6;
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.nav-btn {
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.login-btn {
+  color: var(--secondary-color);
+  background: rgba(52, 152, 219, 0.1);
+}
+
+.login-btn:hover {
+  background: rgba(52, 152, 219, 0.2);
+}
+
+.register-btn {
+  background: var(--secondary-color);
+  color: white;
+}
+
+.register-btn:hover {
+  background: var(--primary-color);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 20px rgba(52, 152, 219, 0.3);
+}
+
+/* Mobile Menu Button */
+.mobile-menu-btn {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: var(--dark-color);
+  cursor: pointer;
+  padding: 0.5rem;
+}
+
+/* Mobile Navigation */
+.mobile-nav {
+  display: none;
+  background: white;
+  padding: 1rem 2rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+.mobile-nav-link {
+  display: block;
+  padding: 0.75rem 0;
+  text-decoration: none;
+  color: var(--dark-color);
+  font-weight: 500;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.mobile-nav-link.active {
+  color: var(--secondary-color);
+}
+
+.mobile-services-section {
+  margin: 1.5rem 0;
+  padding: 1rem;
+  background: #f8fafc;
+  border-radius: 12px;
+}
+
+.services-title {
+  font-size: 1rem;
+  color: var(--dark-color);
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.mobile-service-link {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  text-decoration: none;
+  color: var(--dark-color);
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  margin-bottom: 0.5rem;
+}
+
+.mobile-service-link:hover {
+  background: rgba(52, 152, 219, 0.05);
+  color: var(--secondary-color);
+}
+
+.mobile-service-link svg {
+  color: var(--secondary-color);
+}
+
+.mobile-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.mobile-login-btn,
+.mobile-register-btn {
+  flex: 1;
+  padding: 0.875rem;
+  text-align: center;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.mobile-login-btn {
+  background: rgba(52, 152, 219, 0.1);
+  color: var(--secondary-color);
+}
+
+.mobile-register-btn {
+  background: var(--secondary-color);
+  color: white;
+}
+
+/* Advertisement Section */
+.advertisement-section {
+  padding: 6rem 2rem;
+  background: linear-gradient(135deg, #f0f7ff 0%, #e6f0ff 100%);
+}
+
+.ad-header {
+  text-align: center;
+  max-width: 700px;
+  margin: 0 auto 4rem;
+}
+
+.ad-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  color: white;
+  padding: 0.5rem 1.25rem;
+  border-radius: 2rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+}
+
+.ad-header h2 {
+  font-size: 2.75rem;
+  color: var(--dark-color);
+  margin-bottom: 1rem;
+  font-weight: 700;
+}
+
+.ad-header p {
+  font-size: 1.125rem;
+  color: var(--gray-color);
+  line-height: 1.6;
+}
+
+.ad-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto 4rem;
+}
+
+.ad-card {
+  background: white;
+  padding: 2rem;
+  border-radius: 20px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+  position: relative;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.ad-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.12);
+}
+
+.ad-card.featured {
+  border-color: var(--secondary-color);
+  transform: scale(1.02);
+}
+
+.featured-badge {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(135deg, #ffd700, #ffb400);
+  color: #333;
+  padding: 0.5rem 1.5rem;
+  border-radius: 2rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.featured-badge svg {
+  animation: shine 2s infinite;
+}
+
+@keyframes shine {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.ad-card-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.ad-icon {
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.75rem;
+}
+
+.ad-plan h3 {
+  font-size: 1.5rem;
+  color: var(--dark-color);
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+.ad-price {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--secondary-color);
+}
+
+.ad-price span {
+  font-size: 1rem;
+  color: var(--gray-color);
+  font-weight: 500;
+}
+
+.ad-features {
+  margin-bottom: 2rem;
+}
+
+.ad-feature {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.ad-feature:last-child {
+  border-bottom: none;
+}
+
+.feature-check {
+  color: #10b981;
+  font-size: 1.125rem;
+}
+
+.ad-feature span {
+  color: var(--dark-color);
+  font-weight: 500;
+}
+
+.ad-cta-btn {
+  width: 100%;
+  padding: 1rem;
+  background: var(--secondary-color);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 1.125rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.ad-cta-btn:hover {
+  background: var(--primary-color);
+  transform: translateY(-2px);
+}
+
+.ad-cta-btn.secondary {
+  background: white;
+  color: var(--secondary-color);
+  border: 2px solid var(--secondary-color);
+}
+
+.ad-cta-btn.secondary:hover {
+  background: var(--secondary-color);
+  color: white;
+}
+
+.ad-note {
+  text-align: center;
+  color: var(--gray-color);
+  font-size: 0.875rem;
+  margin-top: 1rem;
+}
+
+.ad-testimonials {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.ad-testimonial {
+  background: white;
+  padding: 2rem;
+  border-radius: 16px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+}
+
+.ad-testimonial p {
+  font-size: 1.125rem;
+  color: var(--dark-color);
+  font-style: italic;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+
+.testimonial-author {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.author-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.author-info h4 {
+  font-size: 1rem;
+  color: var(--dark-color);
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.author-info p {
+  font-size: 0.875rem;
+  color: var(--gray-color);
+  margin: 0;
+}
+
+/* Responsive Design Updates */
+@media (max-width: 1024px) {
+  .nav-links {
+    gap: 1.5rem;
+  }
+  
+  .ad-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .nav-links,
+  .nav-actions {
+    display: none;
+  }
+  
+  .mobile-menu-btn {
+    display: block;
+  }
+  
+  .mobile-nav {
+    display: block;
+  }
+  
+  .nav-container {
+    padding: 0 1rem;
+  }
+  
+  .ad-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .ad-card.featured {
+    transform: none;
+  }
+  
+  .ad-header h2 {
+    font-size: 2rem;
+  }
+  
+  .ad-testimonials {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .ad-card {
+    padding: 1.5rem;
+  }
+  
+  .ad-price {
+    font-size: 2rem;
+  }
+  
+  .ad-header h2 {
+    font-size: 1.75rem;
+  }
+  
+  .ad-testimonial {
+    padding: 1.5rem;
+  }
+}
+
+/* Keep all existing styles from previous CSS and add these new ones */
+/* Ensure no conflicts with existing styles */
