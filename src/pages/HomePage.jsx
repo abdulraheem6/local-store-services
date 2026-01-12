@@ -15,6 +15,8 @@ import {
   FaStar,
   FaCrown,
   FaAd,
+  FaFutbol,
+  FaGraduationCap,
   FaBullhorn,
   FaCheckCircle
 } from 'react-icons/fa';
