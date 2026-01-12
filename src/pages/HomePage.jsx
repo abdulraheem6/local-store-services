@@ -77,8 +77,8 @@ const HomePage = () => {
                   <span>Real Estate</span>
                   <FaExternalLinkAlt className="external-icon" />
                 </a>
-                          {/* Sports Service */}
-                <a href="https://example-sports.com" target="_blank" rel="noopener noreferrer" className="dropdown-item">
+                {/* Sports Service */}
+                <a href="https://cricket-tournament.pages.dev" target="_blank" rel="noopener noreferrer" className="dropdown-item">
                   <FaFutbol />
                   <span>Sports Academy</span>
                   <FaExternalLinkAlt className="external-icon" />
